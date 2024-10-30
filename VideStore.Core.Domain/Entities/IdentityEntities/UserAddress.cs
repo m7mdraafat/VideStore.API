@@ -11,5 +11,6 @@ namespace VideStore.Domain.Entities.IdentityEntities
         public string Governorate { get; set; } = null!;
         public string? PostalCode { get; set; } 
         public string AppUserId { get; set; } = null!;
+        public AppUser AppUser { get; set; } = new(); 
     }
 }
