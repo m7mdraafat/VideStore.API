@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="7.0.1" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VideStore.Core.Application\VideStore.Application.csproj" />
+    <ProjectReference Include="..\VideStore.Presistence\VideStore.Presistence.csproj" />
+  </ItemGroup>
+
 </Project>
