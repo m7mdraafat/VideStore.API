@@ -36,6 +36,7 @@ namespace VideStore.Api
             services.AddHangfireConfigurations(databaseConnections.HangfireConnection);
 
             services.AddCorsPolicy(); 
+
             return builder; 
 
 

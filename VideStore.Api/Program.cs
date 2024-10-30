@@ -1,5 +1,6 @@
 using VideStore.Api;
 using VideStore.Api.ServicesExtensions;
+using VideStore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +16,13 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
+app.UseCors("AllowOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboardAndRecurringJob(builder.Services); 
 
 app.Run();

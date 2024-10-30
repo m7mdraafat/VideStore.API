@@ -10,8 +10,4 @@
     <ProjectReference Include="..\VideStore.Core.Domain\VideStore.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ServicesExtensions\" />
-  </ItemGroup>
-
 </Project>
