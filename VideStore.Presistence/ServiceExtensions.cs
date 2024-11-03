@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using VideStore.Presistence.Context;
 
-namespace VideStore.Presistence;
+namespace VideStore.Persistence;
 public static class ServiceExtensions
 {
     public static IServiceCollection AddStoreContext(this IServiceCollection services, string connectionString)
@@ -15,5 +15,6 @@ public static class ServiceExtensions
 
         return services;
     }
+
 
 }

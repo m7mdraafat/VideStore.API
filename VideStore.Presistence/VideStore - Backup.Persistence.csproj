@@ -12,7 +12,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VideStore.Core.Application\VideStore.Application.csproj" />
-    <ProjectReference Include="..\VideStore.Shared\VideStore.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Specifications\IdentityCodesSpecification\" />
   </ItemGroup>
 
 </Project>
