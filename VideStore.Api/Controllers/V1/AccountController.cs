@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using VideStore.Api.Extensions;
 using VideStore.Application.Interfaces;
 using VideStore.Shared.Requests;
-using VideStore.Shared.Responses;
+using VideStore.Shared.Requests.Users;
+using VideStore.Shared.Responses.Users;
 
 namespace VideStore.Api.Controllers.V1
 {
-    [Route("api/v/{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class AccountController(IAccountService accountService) : ControllerBase
@@ -32,7 +33,7 @@ namespace VideStore.Api.Controllers.V1
         }
 
         [Authorize]
-        [HttpPost("change-password")]
+        [HttpPut("change-password")]
         public async Task<ActionResult> ChangePassword(ChangePasswordRequest request)
         {
             var result = await accountService.ChangePasswordAsync(request, User);

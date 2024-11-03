@@ -1,11 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VideStore.Api.Extensions;
 using VideStore.Application.Interfaces;
-using VideStore.Shared.Requests;
-using VideStore.Shared.Responses;
+using VideStore.Shared.Requests.Users;
+using VideStore.Shared.Responses.Users;
 
 namespace VideStore.Api.Controllers.V1
 {
@@ -55,7 +54,7 @@ namespace VideStore.Api.Controllers.V1
         {
             var result = await authService.VerifyRegisterCodeAsync(request, User);
 
-            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
 
         [HttpPost("send-reset-password-code")]
@@ -71,10 +70,10 @@ namespace VideStore.Api.Controllers.V1
         {
             var result = await authService.VerifyResetPasswordCodeAsync(request);
 
-            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
 
-        [HttpPost("reset-password")]
+        [HttpPut("reset-password")]
         public async Task<ActionResult> ResetPassword(ResetPasswordRequest request)
         {
             var result = await authService.ResetPasswordAsync(request);
