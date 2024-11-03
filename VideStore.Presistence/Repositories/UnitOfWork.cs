@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using VideStore.Domain.Common;
 using VideStore.Domain.Interfaces;
-using VideStore.Presistence.Context;
+using VideStore.Persistence.Context;
 
 namespace VideStore.Persistence.Repositories
 {

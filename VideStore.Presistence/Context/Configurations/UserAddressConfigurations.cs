@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using VideStore.Domain.Entities.IdentityEntities;
 
-namespace VideStore.Presistence.Context.Configurations
+namespace VideStore.Persistence.Context.Configurations
 {
     public class UserAddressConfigurations : IEntityTypeConfiguration<UserAddress>
     {
@@ -14,10 +14,10 @@ namespace VideStore.Presistence.Context.Configurations
             builder.Property(x => x.Governorate).IsRequired().HasMaxLength(200);
             builder.Property(x => x.City).IsRequired().HasMaxLength(100);
             builder.Property(x => x.PostalCode).IsRequired().HasMaxLength(50);
-            
-            builder.HasOne(u=>u.AppUser)
-                   .WithMany(u=>u.UserAddresses)
-                   .HasForeignKey(x=>x.AppUserId)
+
+            builder.HasOne(u => u.AppUser)
+                   .WithMany(u => u.UserAddresses)
+                   .HasForeignKey(x => x.AppUserId)
                    .OnDelete(DeleteBehavior.Cascade);
 
         }

@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using VideStore.Presistence.Context;
+using VideStore.Persistence.Context;
 
 namespace VideStore.Persistence;
 public static class ServiceExtensions
