@@ -8,7 +8,7 @@ using VideStore.Presistence.Context;
 
 #nullable disable
 
-namespace VideStore.Presistence.Migrations
+namespace VideStore.Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
     partial class StoreDbContextModelSnapshot : ModelSnapshot

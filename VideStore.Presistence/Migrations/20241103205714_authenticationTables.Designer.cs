@@ -9,11 +9,11 @@ using VideStore.Presistence.Context;
 
 #nullable disable
 
-namespace VideStore.Presistence.Migrations
+namespace VideStore.Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20241029190607_AddIdentityTables")]
-    partial class AddIdentityTables
+    [Migration("20241103205714_authenticationTables")]
+    partial class authenticationTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
