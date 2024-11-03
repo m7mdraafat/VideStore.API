@@ -10,6 +10,7 @@ namespace VideStore.Api.ServicesExtensions
             services.Configure<MailData>(configuration.GetSection("MailData"));
             services.Configure<HangfireSettingsData>(configuration.GetSection("HangfireSettingsData"));
             services.Configure<GoogleData>(configuration.GetSection("GoogleData"));
+            services.Configure<JwtData>(configuration.GetSection("JWT"));
 
             return services;
         }
