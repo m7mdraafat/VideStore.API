@@ -3,7 +3,11 @@ using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using VideStore.Application.Interfaces;
+using VideStore.Application.Services;
 using VideStore.Domain.ConfigurationsData;
+using VideStore.Infrastructure.ExternalServices;
+using VideStore.Infrastructure.Interfaces;
 using VideStore.Infrastructure.Utilities;
 
 namespace VideStore.Infrastructure;
@@ -18,6 +22,7 @@ public static class ServiceExtensions
 
         return services;
     }
+
 
     public static WebApplication UseHangfireDashboardAndRecurringJob(this WebApplication app, IServiceCollection services)
     {
@@ -43,5 +48,6 @@ public static class ServiceExtensions
 
         return app;
     }
+
 
 }
