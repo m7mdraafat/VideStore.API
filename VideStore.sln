@@ -11,17 +11,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideStore.Infrastructure", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideStore.Presentation", "VideStore.Presentation", "{842FE3CC-3CFE-49A3-A9B1-0E4E2DAC9676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideStore.Domain", "VideStore.Core.Domain\VideStore.Domain.csproj", "{81FB47E2-5816-49AD-AE4D-6E37B2825566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideStore.Domain", "VideStore.Core.Domain\VideStore.Domain.csproj", "{81FB47E2-5816-49AD-AE4D-6E37B2825566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideStore.Application", "VideStore.Core.Application\VideStore.Application.csproj", "{573DF7E3-350B-4F69-8EE7-FE5C4F0A5C2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideStore.Application", "VideStore.Core.Application\VideStore.Application.csproj", "{573DF7E3-350B-4F69-8EE7-FE5C4F0A5C2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideStore.Infrastructure", "VideStore.Infrastructure\VideStore.Infrastructure.csproj", "{1D91C8F5-53F2-47AD-B7F7-BE8D705A5F2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideStore.Infrastructure", "VideStore.Infrastructure\VideStore.Infrastructure.csproj", "{1D91C8F5-53F2-47AD-B7F7-BE8D705A5F2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideStore.Presistence", "VideStore.Presistence\VideStore.Presistence.csproj", "{E8C7E18E-3145-4910-AD24-21086FA6C6CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideStore.Persistence", "VideStore.Presistence\VideStore.Persistence.csproj", "{E8C7E18E-3145-4910-AD24-21086FA6C6CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideStore.Api", "VideStore.Api\VideStore.Api.csproj", "{2B8A1BD7-CE2C-4E62-A618-D111AFE669E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideStore.Api", "VideStore.Api\VideStore.Api.csproj", "{2B8A1BD7-CE2C-4E62-A618-D111AFE669E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideStore.Shared", "VideStore.Shared\VideStore.Shared.csproj", "{DE446D12-4AA3-493D-A47D-B79AEF651C7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideStore.Shared", "VideStore.Shared\VideStore.Shared.csproj", "{DE446D12-4AA3-493D-A47D-B79AEF651C7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
