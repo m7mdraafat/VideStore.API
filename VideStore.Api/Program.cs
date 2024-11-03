@@ -13,6 +13,7 @@ var app = builder.Build();
 app.UseSwaggerMiddleWare();
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseStaticFiles();
 

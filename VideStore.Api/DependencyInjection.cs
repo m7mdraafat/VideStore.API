@@ -2,7 +2,7 @@
 using VideStore.Api.ServicesExtensions;
 using VideStore.Domain.ConfigurationsData;
 using VideStore.Infrastructure;
-using VideStore.Presistence;
+using VideStore.Persistence;
 
 namespace VideStore.Api
 {
@@ -29,9 +29,11 @@ namespace VideStore.Api
 
             services.AddStoreContext(databaseConnections.StoreConnection);
 
+            services.AddIdentityConfigurations(); // comes before auth service
+
             services.AddAuthConfigurations(jwtData, googleData);
 
-            services.AddIdentityConfigurations();
+            services.AddApplicationServices();
 
             services.AddHangfireConfigurations(databaseConnections.HangfireConnection);
 

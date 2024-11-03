@@ -18,13 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\VideStore.Core.Application\VideStore.Application.csproj" />
     <ProjectReference Include="..\VideStore.Infrastructure\VideStore.Infrastructure.csproj" />
-    <ProjectReference Include="..\VideStore.Presistence\VideStore.Presistence.csproj" />
-    <ProjectReference Include="..\VideStore.Shared\VideStore.Shared.csproj" />
+    <ProjectReference Include="..\VideStore.Presistence\VideStore.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
