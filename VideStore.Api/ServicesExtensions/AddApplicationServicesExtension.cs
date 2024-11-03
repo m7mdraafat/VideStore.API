@@ -2,7 +2,6 @@
 using VideStore.Application.Services;
 using VideStore.Domain.Interfaces;
 using VideStore.Infrastructure.ExternalServices;
-using VideStore.Infrastructure.Interfaces;
 using VideStore.Persistence.Repositories;
 
 namespace VideStore.Api.ServicesExtensions
