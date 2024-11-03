@@ -16,7 +16,7 @@ public class Product : BaseEntity
     public Category Category { get; set; } = null!;
 
     public int ColorId { get; set; }
-    public Color Color { get; set; } = null!;
+    public Color ProductColor { get; set; } = null!;
 
     public virtual ICollection<ProductImage> ProductImages { get; set; } = [];
     public virtual ICollection<ProductSize> ProductSizes { get; set; } = [];

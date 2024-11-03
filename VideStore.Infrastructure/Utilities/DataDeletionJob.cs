@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VideStore.Presistence.Context;
+using VideStore.Persistence.Context;
 
 namespace VideStore.Infrastructure.Utilities
 {

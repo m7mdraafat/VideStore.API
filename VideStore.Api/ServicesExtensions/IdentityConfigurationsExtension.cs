@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using VideStore.Domain.Entities.IdentityEntities;
-using VideStore.Presistence.Context;
+using VideStore.Persistence.Context;
 
 namespace VideStore.Api.ServicesExtensions
 {
