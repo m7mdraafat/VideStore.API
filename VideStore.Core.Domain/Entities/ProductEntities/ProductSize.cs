@@ -10,5 +10,4 @@ public class ProductSize : BaseEntity
     public int SizeId { get; set; }
     public Size Size { get; set; } = null!;
 
-    public int UnitOfStock { get; set; }
 }

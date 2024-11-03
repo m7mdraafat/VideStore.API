@@ -1,6 +1,6 @@
 ﻿using VideStore.Domain.Entities.IdentityEntities;
 using VideStore.Domain.ErrorHandling;
-using VideStore.Shared.Responses;
+using VideStore.Shared.Responses.Users;
 
 namespace VideStore.Application.Interfaces
 {

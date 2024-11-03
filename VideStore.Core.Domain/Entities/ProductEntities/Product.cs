@@ -7,7 +7,7 @@ public class Product : BaseEntity
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public decimal Price { get; set; }
-    public int TotalStockQuantity => ProductSizes.Sum(ps => ps.UnitOfStock); 
+    public int StockQuantity { get; set; }
     public double RatingsAverage { get; set; } = 0;
     public int Sold { get; set; } = 0;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

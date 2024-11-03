@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using VideStore.Application.Interfaces;
-using VideStore.Application.Services;
 using VideStore.Domain.ConfigurationsData;
 using VideStore.Domain.Entities.IdentityEntities;
 using VideStore.Domain.ErrorHandling;
-using VideStore.Infrastructure.Interfaces;
-using VideStore.Shared.Requests;
-using VideStore.Shared.Responses;
+using VideStore.Shared.Requests.Users;
+using VideStore.Shared.Responses.Users;
 
 namespace VideStore.Infrastructure.ExternalServices
 {

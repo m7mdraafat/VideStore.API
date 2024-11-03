@@ -5,7 +5,6 @@ using MimeKit;
 using VideStore.Application.DTOs;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.ConfigurationsData;
-using VideStore.Infrastructure.Interfaces;
 
 namespace VideStore.Infrastructure.ExternalServices
 {

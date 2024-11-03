@@ -7,7 +7,6 @@ using VideStore.Application.Interfaces;
 using VideStore.Application.Services;
 using VideStore.Domain.ConfigurationsData;
 using VideStore.Infrastructure.ExternalServices;
-using VideStore.Infrastructure.Interfaces;
 using VideStore.Infrastructure.Utilities;
 
 namespace VideStore.Infrastructure;

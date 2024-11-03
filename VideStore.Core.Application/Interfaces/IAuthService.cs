@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using VideStore.Domain.ErrorHandling;
-using VideStore.Shared.Requests;
-using VideStore.Shared.Responses;
+using VideStore.Shared.Requests.Users;
+using VideStore.Shared.Responses.Users;
 
 namespace VideStore.Application.Interfaces
 {
@@ -11,9 +11,9 @@ namespace VideStore.Application.Interfaces
         Task<Result<AppUserResponse>> RegisterAsync(RegisterRequest model);
         Task<Result<AppUserResponse>> GoogleSignInAsync(GoogleRequest credentials);
         Task<Result<string>> SendEmailVerificationCodeAsync(ClaimsPrincipal userClaims);
-        Task<Result> VerifyRegisterCodeAsync(CodeVerificationRequest model, ClaimsPrincipal userClaims);
+        Task<Result<string>> VerifyRegisterCodeAsync(CodeVerificationRequest model, ClaimsPrincipal userClaims);
         Task<Result<string>> SendResetPasswordEmailAsync(ResetPasswordEmailRequest model);
-        Task<Result> VerifyResetPasswordCodeAsync(VerifyForgetPasswordRequest model);
+        Task<Result<string>> VerifyResetPasswordCodeAsync(VerifyForgetPasswordRequest model);
         Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model);
 
     }

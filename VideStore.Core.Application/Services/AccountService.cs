@@ -6,7 +6,8 @@ using VideStore.Domain.Entities.IdentityEntities;
 using VideStore.Domain.ErrorHandling;
 using VideStore.Domain.Interfaces;
 using VideStore.Shared.Requests;
-using VideStore.Shared.Responses;
+using VideStore.Shared.Requests.Users;
+using VideStore.Shared.Responses.Users;
 
 namespace VideStore.Application.Services
 {

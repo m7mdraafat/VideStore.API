@@ -1,6 +1,4 @@
-﻿using System.Data.Common;
-using Google.Apis.Auth;
-using Hangfire;
+﻿using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,10 +11,10 @@ using VideStore.Domain.ConfigurationsData;
 using VideStore.Domain.Entities.IdentityEntities;
 using VideStore.Domain.ErrorHandling;
 using VideStore.Domain.Interfaces;
-using VideStore.Infrastructure.Interfaces;
-using VideStore.Shared.Requests;
-using VideStore.Shared.Responses;
 using VideStore.Shared.Specifications;
+using VideStore.Shared.Requests.Users;
+using VideStore.Shared.Responses.Users;
+using VideStore.Shared.Specifications.IdentityCodesSpecifications;
 
 namespace VideStore.Application.Services
 {
@@ -235,7 +233,7 @@ namespace VideStore.Application.Services
             }
         }
 
-        public async Task<Result> VerifyRegisterCodeAsync(CodeVerificationRequest model, ClaimsPrincipal userClaims)
+        public async Task<Result<string>> VerifyRegisterCodeAsync(CodeVerificationRequest model, ClaimsPrincipal userClaims)
         {
             try
             {
@@ -244,7 +242,7 @@ namespace VideStore.Application.Services
                 if (await userManager.FindByEmailAsync(userEmail!) is not { } user)
                     return Result.Failure<string>(new Error(400, "No account found with the provided email address."));
 
-                var specification = new ActiveIdentityCodeSpecification(user.Id);
+                var specification = new ActiveIdentityCodeSpecification(user.Id, true);
                 var identityCode = await unitOfWork.Repository<IdentityCode>().GetEntityAsync(specification);
 
                 if (identityCode is null)
@@ -322,44 +320,42 @@ namespace VideStore.Application.Services
             return Result.Success<string>("If your email is registered with us, a password reset email has been successfully sent.");
         }
 
-        public async Task<Result> VerifyResetPasswordCodeAsync(VerifyForgetPasswordRequest model)
+        public async Task<Result<string>> VerifyResetPasswordCodeAsync(VerifyForgetPasswordRequest model)
         {
-
             if (await userManager.FindByEmailAsync(model.Email!) is not { } user)
                 return Result.Failure<string>(new Error(400, "No account associated with the provided email address was found. Please check the email and try again."));
 
-
-            var specification = new ActiveIdentityCodeSpecification(user.Id);
+            var specification = new ActiveIdentityCodeSpecification(user.Id, false);
 
             var identityCode = await unitOfWork.Repository<IdentityCode>().GetEntityAsync(specification);
 
-
             if (identityCode is null)
-                Result.Failure<string>(new Error(400, "The reset code is missing or invalid. Please request a new reset code."));
+                return Result.Failure<string>(new Error(400, "The reset code is missing or invalid. Please request a new reset code."));
 
             var lastCode = identityCode!.Code;
 
             if (!ConstantComparison(lastCode, HashCode(model.VerificationCode)))
-                Result.Failure<string>(new Error(400, "The reset code is missing or invalid. Please request a new reset code."));
-
+                return Result.Failure<string>(new Error(400, "The reset code is missing or invalid. Please request a new reset code."));
 
             if (identityCode.CreationTime.AddMinutes(10) < DateTime.UtcNow)
-                Result.Failure<string>(new Error(400, "The reset code is missing or invalid. Please request a new reset code."));
-
+                return Result.Failure<string>(new Error(400, "The reset code is missing or invalid. Please request a new reset code."));
 
             identityCode.IsActive = false;
             identityCode.User = user;
             identityCode.ActivationTime = DateTime.UtcNow;
             unitOfWork.Repository<IdentityCode>().Update(identityCode);
+
             var userUpdateResult = await userManager.UpdateAsync(user);
             if (!userUpdateResult.Succeeded)
             {
                 // Log error details here for further diagnostics.
                 return Result.Failure<string>(new Error(500, "An error occurred while updating the user."));
             }
+
             var result = await unitOfWork.CompleteAsync();
             return Result.Success<string>("Reset password code verified successfully.");
         }
+
 
         #region Reset password
 

@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VideStore.Shared.Requests
+namespace VideStore.Shared.Requests.Users
 {
-    public class ChangePasswordRequest
+    public class ResetPasswordRequest
     {
-        [Required(ErrorMessage = "Old password is required.")]
-        public string? OldPassword { get; set; } = null;
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "New password is required.")]
         public string NewPassword { get; set; } = null!;

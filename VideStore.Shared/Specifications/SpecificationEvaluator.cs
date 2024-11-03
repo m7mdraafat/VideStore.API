@@ -16,8 +16,15 @@ namespace VideStore.Shared.Specifications
             // Apply includes
             query = spec.IncludesCriteria.Aggregate(query, (current, include) => current.Include(include));
 
-            // Apply ordering
-            query = query.OrderBy(spec.OrderBy);
+            // Apply ordering - check OrderByDesc first, then fallback to OrderBy
+            if (spec.OrderByDesc != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc);
+            }
+            else if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
 
             // Apply pagination
             if (spec.IsPaginationEnabled)
@@ -27,6 +34,7 @@ namespace VideStore.Shared.Specifications
 
             return query;
         }
+
     }
 
 }
