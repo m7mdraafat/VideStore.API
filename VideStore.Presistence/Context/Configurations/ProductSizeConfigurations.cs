@@ -12,10 +12,6 @@ namespace VideStore.Persistence.Context.Configurations
             // Configure composite primary key
             builder.HasKey(ps => new { ps.ProductId, ps.SizeId });
 
-            // Configure properties
-            builder.Property(ps => ps.UnitOfStock)
-                .IsRequired();
-
             // Configure relationships
             builder.HasOne(ps => ps.Product)
                 .WithMany(p => p.ProductSizes)
