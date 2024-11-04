@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using VideStore.Application.Interfaces;
+using VideStore.Application.Services;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Shared.Requests.Products;
 

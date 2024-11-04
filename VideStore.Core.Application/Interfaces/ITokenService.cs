@@ -7,7 +7,7 @@ namespace VideStore.Application.Interfaces
     public interface ITokenService
     {
         Task<Result<AppUserResponse>> CreateAccessTokenByRefreshTokenAsync();
-        Task<Result> RevokeRefreshTokenAsync();
+        Task<Result<string>> RevokeRefreshTokenAsync();
         Task<string> GenerateAccessTokenAsync(AppUser user); // Mark as async if I/O is involved
         Task SetRefreshTokenInCookieAsync(string refreshToken, DateTime expires);
         Task<RefreshToken> GenerateRefreshTokenAsync();

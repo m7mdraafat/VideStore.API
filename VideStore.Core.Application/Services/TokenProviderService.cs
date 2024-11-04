@@ -68,7 +68,7 @@ namespace VideStore.Application.Services
         #endregion
 
         #region Revoke Refresh Token
-        public async Task<Result> RevokeRefreshTokenAsync()
+        public async Task<Result<string>> RevokeRefreshTokenAsync()
         {
             var refreshTokenFromCookie = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"];
             var user = await userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens!.Any(t => t.Token == refreshTokenFromCookie));
@@ -76,14 +76,14 @@ namespace VideStore.Application.Services
             var refreshToken = user!.RefreshTokens.Single(t => t.Token == refreshTokenFromCookie);
 
             if (refreshToken.IsActive is false)
-                return Result.Failure(new Error(400, "Invalid or inactive refresh token."));
+                return Result.Failure<string>(new Error(400, "Invalid or inactive refresh token."));
 
 
             refreshToken.RevokedAt = DateTime.UtcNow;
 
             await userManager.UpdateAsync(user);
 
-            return Result.Success("Refresh token revoked successfully.");
+            return Result.Success<string>("Refresh token revoked successfully.");
         }
         #endregion
 

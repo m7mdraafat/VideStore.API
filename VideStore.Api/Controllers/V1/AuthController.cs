@@ -1,8 +1,10 @@
-﻿using Asp.Versioning;
+﻿using System.Security.Claims;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VideStore.Api.Extensions;
 using VideStore.Application.Interfaces;
+using VideStore.Application.Services;
 using VideStore.Shared.Requests.Users;
 using VideStore.Shared.Responses.Users;
 
@@ -78,6 +80,14 @@ namespace VideStore.Api.Controllers.V1
         {
             var result = await authService.ResetPasswordAsync(request);
 
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            var result = await authService.LogoutAsync(User);
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
     }

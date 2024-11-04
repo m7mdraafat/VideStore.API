@@ -1,5 +1,7 @@
 ﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.IdentityEntities;
@@ -14,7 +16,8 @@ namespace VideStore.Application.Services
     public class AccountService
         (UserManager<AppUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IUnitOfWork unitOfWork) : IAccountService
+            IUnitOfWork unitOfWork,
+            ITokenService tokenService) : IAccountService
     {
 
         #region Get Current User
@@ -117,6 +120,22 @@ namespace VideStore.Application.Services
 
 
         #endregion
+
+        #region Create Access Token By RefreshToken
+        public async Task<Result<AppUserResponse>> CreateAccessTokenByRefreshTokenAsync()
+        {
+            return await tokenService.CreateAccessTokenByRefreshTokenAsync();
+        }
+        #endregion
+
+        #region Revoke Refresh Token
+        public async Task<Result<string>> RevokeRefreshTokenAsync()
+        {
+            return await tokenService.RevokeRefreshTokenAsync();
+        }
+        #endregion
+
+
 
     }
 }

@@ -403,6 +403,12 @@ namespace VideStore.Application.Services
             return Result.Success<string>("Password changed successfully.");
         }
 
+        public async Task<Result<string>> LogoutAsync(ClaimsPrincipal userClaims)
+        {
+            await signInManager.SignOutAsync();
+            var userName = userClaims.FindFirst(ClaimTypes.GivenName);
+            return Result.Success<string>($"{userName} logout successfully.");
+        }
 
         #endregion
 

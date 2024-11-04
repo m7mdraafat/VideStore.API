@@ -5,17 +5,14 @@ using VideStore.Application.Resolvers;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Shared.Requests.Categories;
 using VideStore.Shared.Requests.Products;
-using VideStore.Shared.Responses.Categories;
 using VideStore.Shared.Responses.Products;
 
 namespace VideStore.Application.Mapping
 {
     public class MappingProfile : Profile
     {
-        private readonly IImageService _imageService;
-        public MappingProfile(IImageService imageService)
+        public MappingProfile()
         {
-            _imageService = imageService;
 
             CreateMap<ProductRequest, Product>()
                 .ForMember(dest => dest.ProductImages, opt => opt.MapFrom<ProductImageResolver>())
@@ -24,7 +21,7 @@ namespace VideStore.Application.Mapping
 
             // Mapping for CategoryRequest to Category
             CreateMap<CategoryRequest, Category>()
-                .ForMember(dest => dest.CoverImageUrl, opt => opt.MapFrom(src => src.CoverImageUrl))
+                .ForMember(dest => dest.CoverImageUrl, opt => opt.Ignore())
                 .ForMember(dest => dest.Products, opt => opt.Ignore());
 
             CreateMap<Product, ProductResponse>()

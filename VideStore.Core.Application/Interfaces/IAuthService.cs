@@ -15,6 +15,6 @@ namespace VideStore.Application.Interfaces
         Task<Result<string>> SendResetPasswordEmailAsync(ResetPasswordEmailRequest model);
         Task<Result<string>> VerifyResetPasswordCodeAsync(VerifyForgetPasswordRequest model);
         Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model);
-
+        Task<Result<string>> LogoutAsync(ClaimsPrincipal userClaims);
     }
 }

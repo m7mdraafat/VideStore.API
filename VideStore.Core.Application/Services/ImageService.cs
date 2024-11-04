@@ -12,7 +12,12 @@ namespace VideStore.Application.Services
             {
                 return "Invalid image file";
             }
-            var imagePath = Path.Combine("Images", folder, $"{folder.Substring(0, folder.Length-1)}-", id.ToString());
+
+            if (folder.EndsWith("s"))
+            {
+                folder = folder.Substring(0, folder.Length - 1);
+            }
+            var imagePath = Path.Combine("Images", folder, $"{folder}-{id.ToString()}");
             var finalPath = Path.Combine(environment.WebRootPath, imagePath);
             if (!Directory.Exists(finalPath))
             {
@@ -34,9 +39,25 @@ namespace VideStore.Application.Services
                 await file.CopyToAsync(stream);
             }
 
+            var imageUrl = Path.Combine(imagePath, fileName).Replace("\\", "/");
 
-            return $"{imagePath}/{fileName}";
+            return imageUrl;
 
+        }
+        public async Task<bool> DeleteImageAsync(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl))
+                return false;
+
+            // Construct the full path to the image file
+            var imagePath = Path.Combine(environment.WebRootPath, imageUrl.TrimStart('/'));
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath); // Delete the file
+                return true; // Return success
+            }
+
+            return false; // Return failure if the file doesn't exist
         }
     }
 }

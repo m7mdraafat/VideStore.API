@@ -8,18 +8,38 @@ using VideStore.Shared.Specifications;
 
 namespace VideStore.Application.Services
 {
-    public class CategoryService(IUnitOfWork unitOfWork, IMapper mapper) : ICategoryService
+    public class CategoryService(IUnitOfWork unitOfWork, IMapper mapper, IImageService imageService) : ICategoryService
     {
         public async Task<Result<Category>> CreateCategoryAsync(CategoryRequest categoryRequest)
         {
+            // Map the request to the Category entity
             var category = mapper.Map<Category>(categoryRequest);
 
+            // Add the new category to the repository and save it to generate the Id
+            category.CoverImageUrl = "empty";
             await unitOfWork.Repository<Category>().AddAsync(category);
-
             var result = await unitOfWork.CompleteAsync();
 
-            return result > 0 ? Result.Success<Category>(category) : Result.Failure<Category>(new Error(500, "Error occured while saving category."));
+            if (result > 0)
+            {
+                // Save the image after the Id is generated
+                if (categoryRequest.Image != null)
+                {
+                    var folderType = "Category";
+                    var imageUrl = await imageService.SaveImageAsync(categoryRequest.Image, folderType, category.Id);
+                    category.CoverImageUrl = imageUrl;
+
+                    // Update the category with the new image URL
+                    unitOfWork.Repository<Category>().Update(category);
+                    await unitOfWork.CompleteAsync();
+                }
+
+                return Result.Success<Category>(category);
+            }
+
+            return Result.Failure<Category>(new Error(500, "Error occurred while saving category."));
         }
+
 
         public async Task<Result<Category>> GetCategoryByIdAsync(int id)
         {
@@ -49,14 +69,36 @@ namespace VideStore.Application.Services
             if (category == null)
                 return Result.Failure<Category>(new Error(404, $"Category with id {id} not found."));
 
+            // Save the new image if provided
+            if (categoryRequest.Image != null)
+            {
+                // Attempt to delete the old image file if it exists
+                if (!string.IsNullOrEmpty(category.CoverImageUrl))
+                {
+                    var imageDeleted = await imageService.DeleteImageAsync(category.CoverImageUrl);
+                    if (!imageDeleted)
+                    {
+                        return Result.Failure<Category>(new Error(500, "Error occurred while deleting the old category image."));
+
+                    }
+                }
+
+                // Save the new image
+                var folderType = "Category";
+                var newImageUrl = await imageService.SaveImageAsync(categoryRequest.Image, folderType, id);
+                category.CoverImageUrl = newImageUrl; // Update the CoverImageUrl with the new image URL
+            }
+
+            // Map other properties
             mapper.Map(categoryRequest, category);
 
             unitOfWork.Repository<Category>().Update(category);
 
             var result = await unitOfWork.CompleteAsync();
 
-            return result > 0 ? Result.Success<Category>(category) : Result.Failure<Category>(new Error(500, "Error occured while updating category."));
+            return result > 0 ? Result.Success<Category>(category) : Result.Failure<Category>(new Error(500, "Error occurred while updating category."));
         }
+
 
         public async Task<Result<string>> DeleteCategoryAsync(int id)
         {
@@ -64,6 +106,15 @@ namespace VideStore.Application.Services
 
             if (category == null)
                 return Result.Failure<string>(new Error(400, $"Category with id {id} not found"));
+
+            if (!string.IsNullOrEmpty(category.CoverImageUrl))
+            {
+                var imageDeleted = await imageService.DeleteImageAsync(category.CoverImageUrl);
+                if (!imageDeleted)
+                {
+                    return Result.Failure<string>(new Error(500, "Error occurred while deleting the category image."));
+                }
+            }
 
             unitOfWork.Repository<Category>().Delete(category);
 

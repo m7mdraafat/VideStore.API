@@ -41,5 +41,18 @@ namespace VideStore.Api.Controllers.V1
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshAccessToken()
+        {
+            var result = await accountService.CreateAccessTokenByRefreshTokenAsync();
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+        }
+
+        [HttpPost("revoke-refresh-token")]
+        public async Task<IActionResult> RevokeRefreshToken()
+        {
+            var result = await accountService.RevokeRefreshTokenAsync();
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+        }
     }
 }

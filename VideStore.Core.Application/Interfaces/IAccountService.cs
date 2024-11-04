@@ -11,5 +11,7 @@ namespace VideStore.Application.Interfaces
         Task<Result> DeleteAccountAsync(ClaimsPrincipal userClaims);
         Task<Result<string>> ChangePasswordAsync(ChangePasswordRequest model, ClaimsPrincipal userClaims);
         Task<Result<CurrentUserResponse>> GetCurrentUser(ClaimsPrincipal userClaims);
+        Task<Result<AppUserResponse>> CreateAccessTokenByRefreshTokenAsync();
+        Task<Result<string>> RevokeRefreshTokenAsync();
     }
 }
