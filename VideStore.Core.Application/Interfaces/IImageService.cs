@@ -6,5 +6,7 @@ namespace VideStore.Application.Interfaces
     {
         Task<string> SaveImageAsync(IFormFile file, string folder, int id);
         Task<bool> DeleteImageAsync(string imageUrl);
+        Task<bool> DeleteFolderAsync(string folderPath);
+
     }
 }
