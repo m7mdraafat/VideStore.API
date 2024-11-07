@@ -58,5 +58,13 @@ namespace VideStore.Api.Controllers.V1
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
 
         }
+
+        [HttpGet("{searchQuery:alpha}")]
+        public async Task<ActionResult> SearchAsync(string searchQuery)
+        {
+            var result = await categoryService.SearchAsync(searchQuery);
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+
+        }
     }
 }
