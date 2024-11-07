@@ -8,15 +8,27 @@ namespace VideStore.Shared.Specifications
     {
         public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecifications<T> spec)
         {
+            if (inputQuery == null) throw new ArgumentNullException(nameof(inputQuery));
+            if (spec == null) throw new ArgumentNullException(nameof(spec));
+
             var query = inputQuery;
 
             // Apply filtering
-            query = query.Where(spec.WhereCriteria);
+            if (spec.WhereCriteria != null)
+            {
+                query = query.Where(spec.WhereCriteria);
+            }
 
             // Apply includes
-            query = spec.IncludesCriteria.Aggregate(query, (current, include) => current.Include(include));
+            if (spec.Includes != null && spec.Includes.Any())
+            {
+                foreach (var include in spec.Includes)
+                {
+                    query = include(query);
+                }
+            }
 
-            // Apply ordering - check OrderByDesc first, then fallback to OrderBy
+            // Apply ordering
             if (spec.OrderByDesc != null)
             {
                 query = query.OrderByDescending(spec.OrderByDesc);
@@ -26,7 +38,7 @@ namespace VideStore.Shared.Specifications
                 query = query.OrderBy(spec.OrderBy);
             }
 
-            // Apply pagination
+            // Apply pagination if enabled
             if (spec.IsPaginationEnabled)
             {
                 query = query.Skip(spec.Skip).Take(spec.Take);
@@ -34,7 +46,5 @@ namespace VideStore.Shared.Specifications
 
             return query;
         }
-
     }
-
 }

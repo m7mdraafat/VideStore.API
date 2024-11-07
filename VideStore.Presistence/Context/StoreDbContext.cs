@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,7 +17,8 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options):  Identity
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(typeof(UserConfigurations).Assembly);
+        //builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.ApplyConfigurationsFromAssembly(typeof(StoreDbContext).Assembly);
     }
 
     // users 
@@ -25,7 +27,6 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options):  Identity
     public DbSet<UserAddress> UserAddresses { get; set; }
 
     // products
-
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories {get; set; }
     public DbSet<Size> Sizes { get; set; }

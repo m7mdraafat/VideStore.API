@@ -1,4 +1,5 @@
-﻿using VideStore.Domain.Common;
+﻿using System.Text.Json.Serialization;
+using VideStore.Domain.Common;
 
 namespace VideStore.Domain.Entities.ProductEntities;
 
@@ -13,12 +14,13 @@ public class Product : BaseEntity
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set;} = DateTime.UtcNow;
     public int CategoryId { get; set; }
+    [JsonIgnore]
     public Category Category { get; set; } = null!;
 
     public int ColorId { get; set; }
-    public Color ProductColor { get; set; } = null!;
+    public Color Color { get; set; } = null!;
 
-    public virtual ICollection<ProductImage> ProductImages { get; set; } = [];
-    public virtual ICollection<ProductSize> ProductSizes { get; set; } = [];
+    public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+    public virtual ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
 
 }

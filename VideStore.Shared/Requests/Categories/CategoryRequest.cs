@@ -9,7 +9,6 @@ namespace VideStore.Shared.Requests.Categories
         public string Name { get; set; } = null!;
         [Required]
         public string Description { get; set; } = null!;
-        [Required]
-        public IFormFile Image { get; set; } = null!;
+        public IFormFile? Image { get; set; }
     }
 }

@@ -43,7 +43,7 @@ public static class ServiceExtensions
         });
 
         // Schedule recurring job
-        RecurringJob.AddOrUpdate<DataDeletionJob>("data-deletion-job", x => x.Execute(), Cron.Monthly(1));
+        RecurringJob.AddOrUpdate<DataDeletionJob>("data-deletion-job", x => x.Execute(), Cron.Daily(1));
 
         return app;
     }

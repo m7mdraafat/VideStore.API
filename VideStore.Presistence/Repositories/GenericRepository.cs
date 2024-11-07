@@ -27,14 +27,20 @@ namespace VideStore.Persistence.Repositories
         public async Task AddAsync(T entity) => await storeContext.Set<T>().AddAsync(entity);
         public void Update(T entity)
         {
+            // Check if the entity is being tracked
             var existingEntity = storeContext.Set<T>().Local.FirstOrDefault(e => e.Id == entity.Id);
+
             if (existingEntity != null)
             {
                 // Detach the existing entity if it's already in the local cache
                 storeContext.Entry(existingEntity).State = EntityState.Detached;
             }
+
+            // Attach the entity and mark it as modified
+            storeContext.Set<T>().Attach(entity);
             storeContext.Entry(entity).State = EntityState.Modified;
         }
+
 
 
         public void Delete(T entity) => storeContext.Set<T>().Remove(entity);

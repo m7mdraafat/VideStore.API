@@ -24,7 +24,6 @@ namespace VideStore.Persistence.Context.Configurations
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
-
             // Configure relationships
             builder.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
@@ -41,7 +40,7 @@ namespace VideStore.Persistence.Context.Configurations
                 .HasForeignKey(ps => ps.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.ProductColor)
+            builder.HasOne(p => p.Color)
                 .WithMany(c => c.Products)
                 .HasForeignKey(x => x.ColorId)
                 .OnDelete(DeleteBehavior.Cascade);
