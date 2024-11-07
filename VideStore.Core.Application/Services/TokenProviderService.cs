@@ -145,7 +145,9 @@ namespace VideStore.Application.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.None,
                 Expires = expires.ToLocalTime(),
+                Secure = true
             };
 
             httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);

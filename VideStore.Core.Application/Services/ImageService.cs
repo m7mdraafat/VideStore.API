@@ -13,11 +13,16 @@ namespace VideStore.Application.Services
                 return "Invalid image file";
             }
 
+            string singleDirectory = "";
             if (folder.EndsWith("s"))
             {
-                folder = folder.Substring(0, folder.Length - 1);
+                singleDirectory = folder.Substring(0, folder.Length - 1);
             }
-            var imagePath = Path.Combine("Images", folder, $"{folder}-{id.ToString()}");
+            else
+            {
+                singleDirectory = folder;
+            }
+            var imagePath = Path.Combine("Images", folder, $"{singleDirectory}-{id.ToString()}");
             var finalPath = Path.Combine(environment.WebRootPath, imagePath);
             if (!Directory.Exists(finalPath))
             {
@@ -47,17 +52,59 @@ namespace VideStore.Application.Services
         public async Task<bool> DeleteImageAsync(string imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl))
-                return false;
-
-            // Construct the full path to the image file
-            var imagePath = Path.Combine(environment.WebRootPath, imageUrl.TrimStart('/'));
-            if (File.Exists(imagePath))
             {
-                File.Delete(imagePath); // Delete the file
-                return true; // Return success
+                return false; // Invalid image URL
             }
 
-            return false; // Return failure if the file doesn't exist
+            // Convert the image URL to a file path
+            var filePath = Path.Combine(environment.WebRootPath, imageUrl.Replace("/", "\\"));
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                    return true; // Image successfully deleted
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception (logging not shown here)
+                    return false; // Failed to delete the image
+                }
+            }
+
+
+
+            return false; // File not found
         }
+
+        public async Task<bool> DeleteFolderAsync(string folderPath)
+        {
+            if (string.IsNullOrEmpty(folderPath))
+            {
+                return false; // Invalid folder path
+            }
+
+            // Convert the relative folder path to an absolute path
+            var directoryPath = Path.Combine(environment.WebRootPath, folderPath.Replace("/", "\\"));
+
+            if (Directory.Exists(directoryPath))
+            {
+                try
+                {
+                    // Delete the directory and all its contents
+                    Directory.Delete(directoryPath, true); // 'true' parameter ensures deletion of contents
+                    return true; // Folder successfully deleted
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception (logging not shown here)
+                    return false; // Failed to delete the folder
+                }
+            }
+
+            return false; // Folder not found
+        }
+
     }
 }

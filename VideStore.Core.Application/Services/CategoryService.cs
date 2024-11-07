@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.ErrorHandling;
@@ -39,11 +40,24 @@ namespace VideStore.Application.Services
 
             return Result.Failure<Category>(new Error(500, "Error occurred while saving category."));
         }
-
-
         public async Task<Result<Category>> GetCategoryByIdAsync(int id)
         {
-            var category = await unitOfWork.Repository<Category>().GetEntityAsync(id);
+            var spec = new BaseSpecifications<Category>
+            {
+                WhereCriteria = c => c.Id == id,
+
+            };
+            spec.Includes.Add(q => q.Include(c => c.Products)
+                .ThenInclude(p => p.ProductImages));
+            spec.Includes.Add(q => q.Include(c => c.Products)
+                .ThenInclude(p => p.Color));
+            spec.Includes.Add(q => q.Include(c => c.Products)
+                .ThenInclude(p => p.ProductSizes));
+            spec.Includes.Add(q => q.Include(c => c.Products)
+                .ThenInclude(p => p.ProductSizes).ThenInclude(ps=>ps.Size));
+
+
+            var category = await unitOfWork.Repository<Category>().GetEntityAsync(spec);
             return category == null ? Result.Failure<Category>(new Error(404, $"Category with id {id} not found")) : Result.Success<Category>(category);
         }
 
@@ -105,14 +119,14 @@ namespace VideStore.Application.Services
             var category = await unitOfWork.Repository<Category>().GetEntityAsync(id);
 
             if (category == null)
-                return Result.Failure<string>(new Error(400, $"Category with id {id} not found"));
+                return Result.Failure<string>(new Error(404, $"Category with id {id} not found"));
 
             if (!string.IsNullOrEmpty(category.CoverImageUrl))
             {
-                var imageDeleted = await imageService.DeleteImageAsync(category.CoverImageUrl);
+                var imageDeleted = await imageService.DeleteFolderAsync($"Images/Category/Category-{category.Id}");
                 if (!imageDeleted)
                 {
-                    return Result.Failure<string>(new Error(500, "Error occurred while deleting the category image."));
+                    Console.WriteLine($"category with category id {category.Id} does not have image.");
                 }
             }
 
@@ -120,7 +134,8 @@ namespace VideStore.Application.Services
 
             var result = await unitOfWork.CompleteAsync();
 
-            return result >= 0 ? Result.Success<string>("category delete successfully.") : Result.Failure<string>(new Error(500, "Error occured while deleting category."));
+            return result >= 0 ? Result.Success<string>("category delete successfully.") :
+                Result.Failure<string>(new Error(500, "Error occured while deleting category."));
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using VideStore.Application.DTOs;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.ConfigurationsData;
@@ -26,7 +27,8 @@ namespace VideStore.Application.Services
             IOptions<GoogleData> googleOptions,
             IGoogleService googleService,
             IUnitOfWork unitOfWork, 
-            IEmailService emailService) : IAuthService
+            IEmailService emailService,
+            IHttpContextAccessor httpContextAccessor) : IAuthService
     {
         private readonly GoogleData _googleData = googleOptions.Value;
 
@@ -403,14 +405,22 @@ namespace VideStore.Application.Services
             return Result.Success<string>("Password changed successfully.");
         }
 
-        public async Task<Result<string>> LogoutAsync(ClaimsPrincipal userClaims)
-        {
-            await signInManager.SignOutAsync();
-            var userName = userClaims.FindFirst(ClaimTypes.GivenName);
-            return Result.Success<string>($"{userName} logout successfully.");
-        }
 
         #endregion
+        public async Task<Result<string>> LogoutAsync(ClaimsPrincipal userClaims)
+        {
+            // Clear the authentication cookie (used by cookie authentication)
+            httpContextAccessor.HttpContext?.Response.Cookies.Delete(".AspNetCore.Cookies");
+
+            // Optionally, clear any custom cookies (e.g., refresh token cookie)
+            httpContextAccessor.HttpContext?.Response.Cookies.Delete("refreshToken");
+
+            // Sign out the user
+            await signInManager.SignOutAsync();
+
+            var userName = userClaims.FindFirst(ClaimTypes.GivenName);
+            return Result.Success<string>($"{userName?.Value} logout successfully.");
+        }
 
         #region Generate Secure Code and hash code
         private static string GenerateSecureCode()
