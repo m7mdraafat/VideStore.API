@@ -6,10 +6,14 @@
         {
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigins",
-                    builder => builder.AllowAnyOrigin() // Allow all origins
+                options.AddPolicy("AllowOrigins", builder =>
+                {
+                    builder.WithOrigins("http://localhost:5173")
+                        .AllowCredentials()
                         .AllowAnyHeader()
-                        .AllowAnyMethod());
+                        .AllowAnyMethod();
+                });
+
             });
 
             return services;

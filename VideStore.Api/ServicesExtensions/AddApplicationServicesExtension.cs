@@ -16,14 +16,15 @@ namespace VideStore.Api.ServicesExtensions
             services.AddScoped<ITokenService, TokenProviderService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IImageService, ImageService>();
-            services.AddScoped<ICategoryService, CategoryService>();    
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>(); 
             // external services
 
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IGoogleService, GoogleAuthService>();
 
             // auto mapper
-            services.AddAutoMapper(typeof(MappingProfile)); 
+            services.AddAutoMapper(typeof(MappingProfile).Assembly); 
             return services;
         }
     }
