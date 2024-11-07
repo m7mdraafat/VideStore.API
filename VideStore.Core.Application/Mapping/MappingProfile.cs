@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using VideStore.Application.Interfaces;
-using VideStore.Application.Resolvers;
+using VideStore.Application.Mapping.Resolvers;
 using VideStore.Domain.Entities.ProductEntities;
+using VideStore.Domain.Interfaces;
 using VideStore.Shared.Requests.Categories;
 using VideStore.Shared.Requests.Products;
 using VideStore.Shared.Responses.Products;
@@ -13,11 +13,9 @@ namespace VideStore.Application.Mapping
     {
         public MappingProfile()
         {
-
             CreateMap<ProductRequest, Product>()
-                .ForMember(dest => dest.ProductImages, opt => opt.MapFrom<ProductImageResolver>())
-                .ForMember(dest => dest.ProductSizes, opt => opt.MapFrom(src => MapProductSizes(src.SizeIds)));
-
+                .ForMember(dest => dest.ProductImages, opt => opt.Ignore())
+                .ForMember(dest => dest.ProductSizes, opt => opt.MapFrom<ProductSizesResolver>());
 
             // Mapping for CategoryRequest to Category
             CreateMap<CategoryRequest, Category>()
@@ -26,21 +24,14 @@ namespace VideStore.Application.Mapping
 
             CreateMap<Product, ProductResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(src => src.ProductColor.ColorName))
-                .ForMember(dest => dest.ColorHexCode, opt => opt.MapFrom(src => src.ProductColor.ColorHexCode))
+                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(src => src.Color != null ? src.Color.ColorName : null))
+                .ForMember(dest => dest.ColorHexCode, opt => opt.MapFrom(src => src.Color != null ? src.Color.ColorHexCode : null))
                 .ForMember(dest => dest.ProductImageUrls, opt => opt.MapFrom(src => src.ProductImages.Select(pi => pi.ImageUrl)))
                 .ForMember(dest => dest.ProductSizes, opt => opt.MapFrom(src => src.ProductSizes));
 
             // Mapping for ProductSize to ProductSizeResponse
-            CreateMap<ProductSize, ProductSizeResponse>();
-        }
-
-        private static List<ProductSize> MapProductSizes(List<int> sizeIds)
-        {
-            return sizeIds.Select(sizeId => new ProductSize
-            {
-                SizeId = sizeId
-            }).ToList();
+            CreateMap<ProductSize, ProductSizeResponse>()
+                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.Size != null ? src.Size.SizeName : null));
         }
     }
 }
