@@ -23,6 +23,7 @@ namespace VideStore.Domain.Entities.OrderEntities
 
         public OrderAddress ShippingAddress { get; set; } = null!;
 
+        public int DeliveryMethodId { get; set; }
         public OrderDeliveryMethod DeliveryMethod { get; set; } = null!;
 
         public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();

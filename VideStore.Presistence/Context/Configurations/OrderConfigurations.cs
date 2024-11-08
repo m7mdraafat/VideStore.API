@@ -2,34 +2,47 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using VideStore.Domain.Entities.OrderEntities;
 
-namespace Infrastructure.Data.Config
+namespace VideStore.Persistence.Context.Configurations
 {
     public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.Property(o => o.Status)
-                .HasConversion<string>();
+            builder.Property(o => o.BuyerEmail)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            builder.OwnsOne(o => o.ShippingAddress, a =>
+            builder.Property(o => o.OrderDate);
+
+            builder.Property(o => o.Status)
+                .HasConversion(
+                    os => os.ToString(),
+                    os => (OrderStatus)Enum.Parse(typeof(OrderStatus), os))
+                .IsRequired();
+
+            builder.OwnsOne(o => o.ShippingAddress, sa =>
             {
-                a.Property(p => p.FullName).HasColumnName("ShippingFullName");
-                a.Property(p => p.StreetAddress).HasColumnName("ShippingStreetAddress");
-                a.Property(p => p.City).HasColumnName("ShippingCity");
-                a.Property(p => p.State).HasColumnName("ShippingState");
-                a.Property(p => p.PostalCode).HasColumnName("ShippingPostalCode");
-                a.Property(p => p.PhoneNumber).HasColumnName("ShippingPhoneNumber");
+                sa.Property(a => a.FullName).IsRequired().HasMaxLength(150);
+                sa.Property(a => a.StreetAddress).IsRequired().HasMaxLength(200);
+                sa.Property(a => a.City).IsRequired().HasMaxLength(50);
+                sa.Property(a => a.Governorate).IsRequired().HasMaxLength(100);
+                sa.Property(a => a.PostalCode).IsRequired().HasMaxLength(10);
             });
 
             builder.HasOne(o => o.DeliveryMethod)
                 .WithMany()
-                .HasForeignKey("DeliveryMethodId")
+                .HasForeignKey(o => o.DeliveryMethodId)
                 .IsRequired();
 
             builder.HasMany(o => o.OrderItems)
-                .WithOne()
-                .HasForeignKey(i => i.OrderId)
+                .WithOne(oi=>oi.Order)
+                .HasForeignKey(oi=>oi.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(o => o.SubTotal)
+                .HasColumnType("decimal(18,2)");
         }
+
+
     }
 }
