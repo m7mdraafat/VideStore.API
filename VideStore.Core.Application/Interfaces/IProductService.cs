@@ -2,8 +2,8 @@
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.ErrorHandling;
 using VideStore.Domain.Interfaces;
-using VideStore.Shared.Requests.Products;
-using VideStore.Shared.Responses.Products;
+using VideStore.Shared.DTOs.Requests.Products;
+using VideStore.Shared.DTOs.Responses.Products;
 using VideStore.Shared.Specifications.ProductSpecifications;
 
 namespace VideStore.Application.Interfaces

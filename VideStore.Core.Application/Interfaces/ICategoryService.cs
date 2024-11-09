@@ -1,7 +1,7 @@
 ﻿
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.ErrorHandling;
-using VideStore.Shared.Requests.Categories;
+using VideStore.Shared.DTOs.Requests.Categories;
 
 namespace VideStore.Application.Interfaces
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VideStore.Shared.Requests.Users
+namespace VideStore.Shared.DTOs.Requests.Users
 {
     public record RegisterRequest(
         [Required(ErrorMessage = "First name is required.")]

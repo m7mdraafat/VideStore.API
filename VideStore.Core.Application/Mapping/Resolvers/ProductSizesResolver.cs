@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.Interfaces;
-using VideStore.Shared.Requests.Products;
+using VideStore.Shared.DTOs.Requests.Products;
 
 namespace VideStore.Application.Mapping.Resolvers
 {

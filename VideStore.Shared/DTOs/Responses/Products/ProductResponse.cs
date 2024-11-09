@@ -1,4 +1,4 @@
-﻿namespace VideStore.Shared.Responses.Products;
+﻿namespace VideStore.Shared.DTOs.Responses.Products;
 
 public class ProductResponse
 {
@@ -12,7 +12,7 @@ public class ProductResponse
     public DateTime UpdatedAt { get; set; }
     public string CategoryName { get; set; } = null!;
     public string ColorName { get; set; } = null!;
-    public string ColorHexCode { get; set; } = null!; 
+    public string ColorHexCode { get; set; } = null!;
     public List<string> ProductImageUrls { get; set; } = [];
     public List<ProductSizeResponse> ProductSizes { get; set; } = [];
 }

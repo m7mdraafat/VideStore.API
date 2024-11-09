@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace VideStore.Shared.Responses.Users
+namespace VideStore.Shared.DTOs.Responses.Users
 {
     public class AppUserResponse
     {

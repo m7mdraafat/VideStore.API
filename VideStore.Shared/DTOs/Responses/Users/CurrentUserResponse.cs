@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VideStore.Shared.Responses.Users
+namespace VideStore.Shared.DTOs.Responses.Users
 {
     public record CurrentUserResponse(
         string FirstName,

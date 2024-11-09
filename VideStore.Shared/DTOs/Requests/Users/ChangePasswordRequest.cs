@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VideStore.Shared.Requests.Users
+namespace VideStore.Shared.DTOs.Requests.Users
 {
     public class ChangePasswordRequest
     {

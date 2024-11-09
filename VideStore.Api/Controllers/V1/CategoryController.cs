@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VideStore.Api.Extensions;
 using VideStore.Application.Interfaces;
-using VideStore.Shared.Requests.Categories;
+using VideStore.Shared.DTOs.Requests.Categories;
 
 namespace VideStore.Api.Controllers.V1
 {

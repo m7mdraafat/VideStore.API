@@ -1,4 +1,4 @@
-﻿namespace VideStore.Shared.Requests.Products
+﻿namespace VideStore.Shared.DTOs.Requests.Products
 {
     public class ColorRequest
     {

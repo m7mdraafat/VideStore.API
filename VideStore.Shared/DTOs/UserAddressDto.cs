@@ -1,8 +1,6 @@
-﻿using VideStore.Domain.Common;
-
-namespace VideStore.Domain.Entities.IdentityEntities
+﻿namespace VideStore.Shared.DTOs
 {
-    public class UserAddress : BaseEntity
+    public class UserAddressDto
     {
         public string AddressName { get; set; } = null!;
         public string AddressLine { get; set; } = null!;
@@ -10,7 +8,5 @@ namespace VideStore.Domain.Entities.IdentityEntities
         public string Governorate { get; set; } = null!;
         public string? PostalCode { get; set; }
 
-        public string AppUserId { get; set; } = null!;
-        public AppUser AppUser { get; set; } = null;
     }
 }

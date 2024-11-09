@@ -1,5 +1,4 @@
-﻿
-namespace VideStore.Shared.Responses.Products
+﻿namespace VideStore.Shared.DTOs.Responses.Products
 {
     public class ColorResponse
     {
@@ -7,5 +6,5 @@ namespace VideStore.Shared.Responses.Products
         public string ColorName { get; set; } = null!;
         public string ColorHexCode { get; set; } = null!;
     }
-    
+
 }

@@ -3,9 +3,9 @@ using VideStore.Application.Interfaces;
 using VideStore.Application.Mapping.Resolvers;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.Interfaces;
-using VideStore.Shared.Requests.Categories;
-using VideStore.Shared.Requests.Products;
-using VideStore.Shared.Responses.Products;
+using VideStore.Shared.DTOs.Requests.Categories;
+using VideStore.Shared.DTOs.Requests.Products;
+using VideStore.Shared.DTOs.Responses.Products;
 
 namespace VideStore.Application.Mapping
 {

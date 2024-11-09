@@ -1,4 +1,4 @@
-﻿namespace VideStore.Shared.Responses.Products;
+﻿namespace VideStore.Shared.DTOs.Responses.Products;
 
 public class ProductSizeResponse
 {

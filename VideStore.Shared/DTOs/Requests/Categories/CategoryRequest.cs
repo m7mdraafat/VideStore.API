@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace VideStore.Shared.Requests.Categories
+namespace VideStore.Shared.DTOs.Requests.Categories
 {
     public class CategoryRequest
     {
