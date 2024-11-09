@@ -27,19 +27,24 @@ namespace VideStore.Persistence.Repositories
         public async Task AddAsync(T entity) => await storeContext.Set<T>().AddAsync(entity);
         public void Update(T entity)
         {
-            // Check if the entity is being tracked
-            var existingEntity = storeContext.Set<T>().Local.FirstOrDefault(e => e.Id == entity.Id);
+            // Attach the entity only if it's not already tracked by the context
+            var existingEntity = storeContext.Set<T>().Find(entity.Id);
 
-            if (existingEntity != null)
+            if (existingEntity == null)
             {
-                // Detach the existing entity if it's already in the local cache
-                storeContext.Entry(existingEntity).State = EntityState.Detached;
+                // If the entity is not found in the context, attach and set as modified
+                storeContext.Set<T>().Attach(entity);
+            }
+            else
+            {
+                // If the entity is already tracked, update its properties directly
+                storeContext.Entry(existingEntity).CurrentValues.SetValues(entity);
             }
 
-            // Attach the entity and mark it as modified
-            storeContext.Set<T>().Attach(entity);
+            // Mark the entity as modified (if necessary)
             storeContext.Entry(entity).State = EntityState.Modified;
         }
+
 
 
 

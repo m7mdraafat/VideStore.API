@@ -7,20 +7,22 @@ public class OrderItem : BaseEntity
 {
     public OrderItem() { }
 
-    public OrderItem(int orderId, int productId, Product product, int quantity, decimal unitPrice)
+    public OrderItem(int orderId, int productId, string productName, string productImageCover ,int quantity, decimal unitPrice)
     {
         OrderId = orderId;
         ProductId = productId;
-        Product = product;
+        ProductName = productName;
         Quantity = quantity;
         UnitPrice = unitPrice;
+        ProductImageCover = productImageCover;
     }
 
     public int OrderId { get; set; }
     public Order Order { get; set; } = null!;
 
     public int ProductId { get; set; }
-    public Product Product { get; set; } = null!;
+    public string ProductName { get; set; } = null!;
+    public string ProductImageCover { get; set; } = null!;
 
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
