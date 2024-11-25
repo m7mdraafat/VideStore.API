@@ -9,7 +9,8 @@ namespace VideStore.Persistence.Context.Configurations
     {
         public void Configure(EntityTypeBuilder<UserAddress> builder)
         {
-            builder.Property(x => x.AddressName).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.AddressName).IsRequired().HasMaxLength(100).IsUnicode();
+            builder.HasIndex(x => new { x.AddressName, x.AppUserId});
             builder.Property(x => x.AddressLine).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Governorate).IsRequired().HasMaxLength(200);
             builder.Property(x => x.City).IsRequired().HasMaxLength(100);

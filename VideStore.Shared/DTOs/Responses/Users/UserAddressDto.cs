@@ -1,4 +1,5 @@
-﻿namespace VideStore.Shared.DTOs
+﻿
+namespace VideStore.Shared.DTOs.Responses.Users
 {
     public class UserAddressDto
     {

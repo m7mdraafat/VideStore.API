@@ -1,13 +1,12 @@
-﻿using System.Security.Claims;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VideStore.Api.Extensions;
 using VideStore.Application.Interfaces;
+using VideStore.Shared.DTOs;
+using VideStore.Shared.DTOs.Requests;
 using VideStore.Shared.DTOs.Requests.Users;
 using VideStore.Shared.DTOs.Responses.Users;
-using VideStore.Shared.Requests;
 
 namespace VideStore.Api.Controllers.V1
 {
@@ -52,6 +51,41 @@ namespace VideStore.Api.Controllers.V1
         public async Task<IActionResult> RevokeRefreshToken()
         {
             var result = await accountService.RevokeRefreshTokenAsync();
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+        }
+
+        [HttpPost("add-address")]
+        [Authorize]
+        public async Task<ActionResult> AddAddress(UserAddressDto userAddressDto)
+        {
+            var result = await accountService.CreateUserAddress(User, userAddressDto);
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+
+        }
+
+        [HttpPost("update-address/{addressName}")]
+        [Authorize]
+        public async Task<ActionResult> UpdateAddress(string addressName, UserAddressDto userAddressDto)
+        {
+            var result = await accountService.UpdateUserAddress(User, addressName, userAddressDto);
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+
+        }
+
+        [HttpDelete("delete-address")]
+        [Authorize]
+        public async Task<ActionResult> DeleteAddress(string addressName)
+        {
+            var result = await accountService.DeleteUserAddressAsync(User, addressName);
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+
+        }
+
+        [Authorize]
+        [HttpPut("edit-user")]
+        public async Task<ActionResult> EditUserData(UpdateUserDto updateUserDto)
+        {
+            var result = await accountService.UpdateUserDataAsync(User, updateUserDto);
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
     }

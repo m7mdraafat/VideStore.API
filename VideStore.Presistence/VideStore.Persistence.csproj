@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VideStore.Core.Application\VideStore.Application.csproj" />
+    <ProjectReference Include="..\VideStore.Core.Domain\VideStore.Domain.csproj" />
+    <ProjectReference Include="..\VideStore.Shared\VideStore.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using VideStore.Shared.DTOs.Responses.Users;
 
 namespace VideStore.Shared.DTOs.Responses.Users
 {
@@ -10,6 +6,6 @@ namespace VideStore.Shared.DTOs.Responses.Users
         string FirstName,
         string LastName,
         string Email,
-        string PhoneNumber
-    );
+        string PhoneNumber,
+        List<UserAddressDto> UserAddresses);
 }

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VideStore.Core.Domain\VideStore.Domain.csproj" />
+    <ProjectReference Include="..\VideStore.Presistence\VideStore.Persistence.csproj" />
     <ProjectReference Include="..\VideStore.Shared\VideStore.Shared.csproj" />
 
   </ItemGroup>
