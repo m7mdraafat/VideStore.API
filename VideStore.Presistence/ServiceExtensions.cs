@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using VideStore.Persistence.Context;
 
 namespace VideStore.Persistence;
@@ -14,6 +15,14 @@ public static class ServiceExtensions
         });
 
         return services;
+    }
+
+    public static IServiceCollection AddRedis(this IServiceCollection services, string redisConnectionString)
+    {
+        services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConnectionString));
+
+        return services;
+
     }
 
 
