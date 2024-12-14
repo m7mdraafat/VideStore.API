@@ -93,7 +93,8 @@ namespace VideStore.Application.Services
             var authClaims = new List<Claim>
             {
                 new (ClaimTypes.GivenName, user.UserName!),
-                new (ClaimTypes.Email, user.Email!)
+                new (ClaimTypes.Email, user.Email!),
+                new (ClaimTypes.NameIdentifier, user.Id)
             };
 
             var userRoles = await userManager.GetRolesAsync(user);

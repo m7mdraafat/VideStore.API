@@ -4,10 +4,6 @@ namespace VideStore.Domain.Entities.CartEntities;
 
 public class ShoppingCart
 {
-    public ShoppingCart(string id)
-    {
-        Id = id;
-    }
     public ShoppingCart()
     {
         Id = Guid.NewGuid().ToString();

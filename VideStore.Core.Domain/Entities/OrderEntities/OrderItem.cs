@@ -1,5 +1,4 @@
 ﻿using VideStore.Domain.Common;
-using VideStore.Domain.Entities.ProductEntities;
 
 namespace VideStore.Domain.Entities.OrderEntities;
 

@@ -13,7 +13,7 @@ namespace VideStore.Persistence.Repositories
         public async Task<ShoppingCart?> CreateOrUpdateShoppingCartAsync(ShoppingCart cart)
         {
             var createdOrUpdated =
-                await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(30));
+                await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(90));
 
             if (createdOrUpdated is false) return null;
             return await GetShoppingCartAsync(cart.Id);
@@ -30,5 +30,7 @@ namespace VideStore.Persistence.Repositories
         {
             return await _database.KeyDeleteAsync(shoppingCartId);
         }
+
+        
     }
 }

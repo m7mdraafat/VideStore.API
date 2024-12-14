@@ -8,10 +8,6 @@ namespace VideStore.Persistence.Context.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.Property(o => o.BuyerEmail)
-                .IsRequired()
-                .HasMaxLength(100);
-
             builder.Property(o => o.OrderDate);
 
             builder.Property(o => o.Status)
@@ -28,11 +24,6 @@ namespace VideStore.Persistence.Context.Configurations
                 sa.Property(a => a.Governorate).IsRequired().HasMaxLength(100);
                 sa.Property(a => a.PostalCode).IsRequired().HasMaxLength(10);
             });
-
-            builder.HasOne(o => o.DeliveryMethod)
-                .WithMany()
-                .HasForeignKey(o => o.DeliveryMethodId)
-                .IsRequired();
 
             builder.HasMany(o => o.OrderItems)
                 .WithOne(oi=>oi.Order)

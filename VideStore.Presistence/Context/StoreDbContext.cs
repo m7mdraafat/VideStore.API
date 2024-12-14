@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using VideStore.Domain.Entities.CartEntities;
 using VideStore.Domain.Entities.IdentityEntities;
 using VideStore.Domain.Entities.OrderEntities;
 using VideStore.Domain.Entities.ProductEntities;
@@ -38,5 +39,6 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options):  Identity
     // order
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<OrderDeliveryMethod> OrderDeliveryMethods { get; set; }
+
+
 }
