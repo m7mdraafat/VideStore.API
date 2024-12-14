@@ -33,6 +33,8 @@ namespace VideStore.Api
 
             services.AddAuthConfigurations(jwtData, googleData);
 
+            services.AddRedis(databaseConnections.RedisConnection); 
+
             services.AddApplicationServices();
 
             services.AddHangfireConfigurations(databaseConnections.HangfireConnection);

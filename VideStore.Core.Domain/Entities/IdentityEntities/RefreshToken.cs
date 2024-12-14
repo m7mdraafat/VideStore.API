@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using VideStore.Domain.Common;
 
 namespace VideStore.Domain.Entities.IdentityEntities

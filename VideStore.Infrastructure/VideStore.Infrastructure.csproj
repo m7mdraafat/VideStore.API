@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VideStore.Presistence\VideStore.Persistence.csproj" />
+    <ProjectReference Include="..\VideStore.Core.Application\VideStore.Application.csproj" />
   </ItemGroup>
 
 </Project>

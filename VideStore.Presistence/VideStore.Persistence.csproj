@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.22" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VideStore.Core.Application\VideStore.Application.csproj" />
+    <ProjectReference Include="..\VideStore.Core.Domain\VideStore.Domain.csproj" />
+    <ProjectReference Include="..\VideStore.Shared\VideStore.Shared.csproj" />
   </ItemGroup>
 
 </Project>

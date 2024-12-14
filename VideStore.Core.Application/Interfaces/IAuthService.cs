@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using VideStore.Domain.ErrorHandling;
-using VideStore.Shared.Requests.Users;
-using VideStore.Shared.Responses.Users;
+using VideStore.Shared.DTOs.Requests.Users;
+using VideStore.Shared.DTOs.Responses.Users;
 
 namespace VideStore.Application.Interfaces
 {

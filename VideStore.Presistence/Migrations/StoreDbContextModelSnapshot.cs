@@ -279,6 +279,7 @@ namespace VideStore.Persistence.Migrations
                     b.Property<string>("AddressName")
                         .IsRequired()
                         .HasMaxLength(100)
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("AppUserId")
@@ -304,7 +305,79 @@ namespace VideStore.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("AddressName", "AppUserId");
+
                     b.ToTable("UserAddresses");
+                });
+
+            modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("OrderDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTime?>("ShippingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductImageCover")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Category", b =>
@@ -574,6 +647,71 @@ namespace VideStore.Persistence.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.Order", b =>
+                {
+                    b.HasOne("VideStore.Domain.Entities.IdentityEntities.AppUser", "AppUser")
+                        .WithMany("Orders")
+                        .HasForeignKey("AppUserId");
+
+                    b.OwnsOne("VideStore.Domain.Entities.OrderEntities.OrderAddress", "ShippingAddress", b1 =>
+                        {
+                            b1.Property<int>("OrderId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
+
+                            b1.Property<string>("FullName")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)");
+
+                            b1.Property<string>("Governorate")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("PhoneNumber")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)");
+
+                            b1.Property<string>("StreetAddress")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("ShippingAddress")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.OrderItem", b =>
+                {
+                    b.HasOne("VideStore.Domain.Entities.OrderEntities.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Product", b =>
                 {
                     b.HasOne("VideStore.Domain.Entities.ProductEntities.Category", "Category")
@@ -582,7 +720,7 @@ namespace VideStore.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VideStore.Domain.Entities.ProductEntities.Color", "ProductColor")
+                    b.HasOne("VideStore.Domain.Entities.ProductEntities.Color", "Color")
                         .WithMany("Products")
                         .HasForeignKey("ColorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -590,7 +728,7 @@ namespace VideStore.Persistence.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("ProductColor");
+                    b.Navigation("Color");
                 });
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.ProductImage", b =>
@@ -625,7 +763,14 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.IdentityEntities.AppUser", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("UserAddresses");
+                });
+
+            modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Category", b =>

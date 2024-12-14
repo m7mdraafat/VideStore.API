@@ -1,5 +1,4 @@
-﻿
-using VideStore.Domain.Common;
+﻿using VideStore.Domain.Common;
 
 namespace VideStore.Domain.Entities.IdentityEntities
 {
@@ -9,8 +8,9 @@ namespace VideStore.Domain.Entities.IdentityEntities
         public string AddressLine { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Governorate { get; set; } = null!;
-        public string? PostalCode { get; set; } 
+        public string? PostalCode { get; set; }
+
         public string AppUserId { get; set; } = null!;
-        public AppUser AppUser { get; set; } = new(); 
+        public AppUser AppUser { get; set; } = null;
     }
 }

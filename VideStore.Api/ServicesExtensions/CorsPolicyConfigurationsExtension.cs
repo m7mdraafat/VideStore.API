@@ -8,10 +8,10 @@
             {
                 options.AddPolicy("AllowOrigins", builder =>
                 {
-                    builder.WithOrigins("http://localhost:5173")
-                        .AllowCredentials()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                    builder.WithOrigins("https://videstore.vercel.app", "http://localhost:5173")
+                            .AllowCredentials()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
                 });
 
             });

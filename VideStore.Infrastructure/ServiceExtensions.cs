@@ -3,10 +3,7 @@ using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using VideStore.Application.Interfaces;
-using VideStore.Application.Services;
 using VideStore.Domain.ConfigurationsData;
-using VideStore.Infrastructure.ExternalServices;
 using VideStore.Infrastructure.Utilities;
 
 namespace VideStore.Infrastructure;
@@ -43,7 +40,14 @@ public static class ServiceExtensions
         });
 
         // Schedule recurring job
-        RecurringJob.AddOrUpdate<DataDeletionJob>("data-deletion-job", x => x.Execute(), Cron.Daily(1));
+        RecurringJob.AddOrUpdate<DataDeletionJob>("delete-inactive-identity-codes",
+            x => x.DeleteExpiredIdentityCodes(),
+            Cron.Daily(1));
+
+        RecurringJob.AddOrUpdate<DataDeletionJob>("delete-inactive-refresh-tokens",
+            x => x.DeleteExpiredOrRevokedRefreshTokens(),
+            Cron.Hourly(1));
+
 
         return app;
     }

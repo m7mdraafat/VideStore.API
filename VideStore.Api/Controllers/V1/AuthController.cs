@@ -1,12 +1,10 @@
-﻿using System.Security.Claims;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VideStore.Api.Extensions;
 using VideStore.Application.Interfaces;
-using VideStore.Application.Services;
-using VideStore.Shared.Requests.Users;
-using VideStore.Shared.Responses.Users;
+using VideStore.Shared.DTOs.Requests.Users;
+using VideStore.Shared.DTOs.Responses.Users;
 
 namespace VideStore.Api.Controllers.V1
 {

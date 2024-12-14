@@ -4,7 +4,7 @@ using AutoMapper;
 using VideStore.Application.Interfaces;
 using VideStore.Application.Services;
 using VideStore.Domain.Entities.ProductEntities;
-using VideStore.Shared.Requests.Products;
+using VideStore.Shared.DTOs.Requests.Products;
 
 namespace VideStore.Application.Mapping.Resolvers
 {

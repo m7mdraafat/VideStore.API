@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
-using VideStore.Application.Interfaces;
 using VideStore.Application.Mapping.Resolvers;
+using VideStore.Domain.Entities.CartEntities;
+using VideStore.Domain.Entities.IdentityEntities;
 using VideStore.Domain.Entities.ProductEntities;
-using VideStore.Domain.Interfaces;
-using VideStore.Shared.Requests.Categories;
-using VideStore.Shared.Requests.Products;
-using VideStore.Shared.Responses.Products;
+using VideStore.Shared.DTOs;
+using VideStore.Shared.DTOs.Requests.Categories;
+using VideStore.Shared.DTOs.Requests.Products;
+using VideStore.Shared.DTOs.Requests.ShoppingCart;
+using VideStore.Shared.DTOs.Responses.Products;
+using VideStore.Shared.DTOs.Responses.ShoppingCart;
+using UserAddressDto = VideStore.Shared.DTOs.Responses.Users.UserAddressDto;
 
 namespace VideStore.Application.Mapping
 {
@@ -13,6 +17,12 @@ namespace VideStore.Application.Mapping
     {
         public MappingProfile()
         {
+
+            CreateMap<UserAddressDto, UserAddress>()
+                .ForMember(dest => dest.AppUser, opt => opt.Ignore())
+                .ForMember(dest => dest.AppUserId, opt => opt.Ignore()).ReverseMap();
+                
+
             CreateMap<ProductRequest, Product>()
                 .ForMember(dest => dest.ProductImages, opt => opt.Ignore())
                 .ForMember(dest => dest.ProductSizes, opt => opt.MapFrom<ProductSizesResolver>());
@@ -32,6 +42,16 @@ namespace VideStore.Application.Mapping
             // Mapping for ProductSize to ProductSizeResponse
             CreateMap<ProductSize, ProductSizeResponse>()
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.Size != null ? src.Size.SizeName : null));
+
+
+            CreateMap<ShoppingCartRequest, ShoppingCart>();
+
+            CreateMap<ShoppingCart, ShoppingCartResponse>();
+
+            CreateMap<CartItemRequest, CartItem>();
+
+            CreateMap<CartItem, CartItemResponse>();
+
         }
     }
 }

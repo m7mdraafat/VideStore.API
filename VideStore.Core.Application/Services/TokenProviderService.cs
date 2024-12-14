@@ -11,7 +11,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using VideStore.Domain.ErrorHandling;
-using VideStore.Shared.Responses.Users;
+using VideStore.Shared.DTOs.Responses.Users;
 
 namespace VideStore.Application.Services
 {
@@ -93,7 +93,8 @@ namespace VideStore.Application.Services
             var authClaims = new List<Claim>
             {
                 new (ClaimTypes.GivenName, user.UserName!),
-                new (ClaimTypes.Email, user.Email!)
+                new (ClaimTypes.Email, user.Email!),
+                new (ClaimTypes.NameIdentifier, user.Id)
             };
 
             var userRoles = await userManager.GetRolesAsync(user);

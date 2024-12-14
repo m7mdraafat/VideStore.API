@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using VideStore.Application.DTOs;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.ErrorHandling;
 using VideStore.Domain.Interfaces;
-using VideStore.Shared.Requests.Products;
-using VideStore.Shared.Responses.Products;
+using VideStore.Shared.DTOs.Requests.Products;
+using VideStore.Shared.DTOs.Responses.Products;
 using VideStore.Shared.Specifications.ProductSpecifications;
 
 namespace VideStore.Application.Services
@@ -135,7 +136,6 @@ namespace VideStore.Application.Services
             return Result.Success(productResponse);
         }
 
-
         public async Task<Result<ProductResponse>> UpdateProductAsync(int id, ProductRequest productRequest)
         {
             // Retrieve the existing product with related data
@@ -158,71 +158,47 @@ namespace VideStore.Application.Services
             var color = await unitOfWork.Repository<Color>().GetEntityAsync(productRequest.ColorId);
             if (color != null) existingProduct.Color = color;
 
-            // Handle image addition and removal (same as before)
-            if (productRequest.ProductImages is { Count: > 0 })
+            //// Retrieve current product sizes
+            //var existingProductSizes = existingProduct.ProductSizes.ToList();
+
+            //// Get new and removed sizes
+            //var newSizeIds = productRequest.SizeIds.Except(existingProductSizes.Select(ps => ps.SizeId)).ToList();
+            //var removedSizeIds = existingProductSizes.Select(ps => ps.SizeId).Except(productRequest.SizeIds).ToList();
+
+            //// Efficiently remove sizes that are no longer needed
+            //if (removedSizeIds.Any())
+            //{
+            //    var sizesToRemove = existingProductSizes.Where(ps => removedSizeIds.Contains(ps.SizeId)).ToList();
+            //    foreach (var sizeToRemove in sizesToRemove)
+            //    {
+            //        existingProduct.ProductSizes.Remove(sizeToRemove);
+            //        unitOfWork.Repository<ProductSize>().Delete(sizeToRemove); // Remove ProductSize from DB
+            //    }
+            //}
+
+            //// Efficiently add new sizes
+            //if (newSizeIds.Any())
+            //{
+
+            //    foreach (var sizeId in newSizeIds)
+            //    {
+            //        var productSize = new ProductSize
+            //        {
+            //            SizeId = sizeId,
+            //            ProductId = existingProduct.Id
+            //        };
+            //        existingProduct.ProductSizes.Add(productSize);
+            //        await unitOfWork.Repository<ProductSize>().AddAsync(productSize); 
+            //    }
+            //}
+
+            foreach (var productSize in existingProduct.ProductSizes )
             {
-                var currentImageUrls = existingProduct.ProductImages.Select(pi => pi.ImageUrl).ToList();
-                var imagesToRemove = currentImageUrls.Where(url => !productRequest.ProductImages.Any(file => file.FileName == url)).ToList();
-
-                foreach (var imageUrl in imagesToRemove)
-                {
-                    await imageService.DeleteImageAsync(imageUrl);
-
-                    var productImageToRemove = existingProduct.ProductImages
-                        .FirstOrDefault(pi => pi.ImageUrl == imageUrl);
-                    if (productImageToRemove != null)
-                    {
-                        existingProduct.ProductImages.Remove(productImageToRemove);
-                    }
-                }
-
-                foreach (var file in productRequest.ProductImages)
-                {
-                    var imageUrl = await imageService.SaveImageAsync(file, "Products", existingProduct.Id);
-                    var productImage = new ProductImage
-                    {
-                        ImageUrl = imageUrl,
-                        ProductId = existingProduct.Id
-                    };
-                    existingProduct.ProductImages.Add(productImage);
-                }
+                productSize.ProductId = existingProduct.Id;
             }
 
-            // Handle size update
-            if (productRequest.SizeIds is { Count: > 0 })
-            {
-                // Get the existing size IDs associated with the product
-                var existingSizeIds = existingProduct.ProductSizes.Select(ps => ps.SizeId).ToHashSet();
-
-                // Find the new sizes that need to be added
-                var newSizeIds = productRequest.SizeIds.Except(existingSizeIds).ToList();
-                var sizesToRemove = existingSizeIds.Except(productRequest.SizeIds).ToList();
-
-                // Remove the sizes that are no longer associated with the product
-                foreach (var sizeId in sizesToRemove)
-                {
-                    var sizeToRemove = existingProduct.ProductSizes
-                        .FirstOrDefault(ps => ps.SizeId == sizeId);
-                    if (sizeToRemove != null)
-                    {
-                        existingProduct.ProductSizes.Remove(sizeToRemove);
-                    }
-                }
-
-                // Add the new sizes to the product
-                foreach (var sizeId in newSizeIds)
-                {
-                    var size = await unitOfWork.Repository<Size>().GetEntityAsync(sizeId);
-                    if (size != null)
-                    {
-                        existingProduct.ProductSizes.Add(new ProductSize
-                        {
-                            SizeId = sizeId,
-                            ProductId = existingProduct.Id
-                        });
-                    }
-                }
-            }
+            // Handle image addition and removal
+            await HandleProductImagesAsync(existingProduct, productRequest.ProductImages);
 
             // Update the product in the repository
             unitOfWork.Repository<Product>().Update(existingProduct);
@@ -267,6 +243,38 @@ namespace VideStore.Application.Services
             var productCount = await unitOfWork.Repository<Product>().GetCountAsync(spec);
 
             return productCount;
+        }
+
+        private async Task HandleProductImagesAsync(Product existingProduct, List<IFormFile> productImages)
+        {
+            if (productImages is { Count: > 0 })
+            {
+                var currentImageUrls = existingProduct.ProductImages.Select(pi => pi.ImageUrl).ToList();
+                var imagesToRemove = currentImageUrls.Where(url => productImages.All(file => file.FileName != url)).ToList();
+
+                foreach (var imageUrl in imagesToRemove)
+                {
+                    await imageService.DeleteImageAsync(imageUrl);
+
+                    var productImageToRemove = existingProduct.ProductImages
+                        .FirstOrDefault(pi => pi.ImageUrl == imageUrl);
+                    if (productImageToRemove != null)
+                    {
+                        existingProduct.ProductImages.Remove(productImageToRemove);
+                    }
+                }
+
+                foreach (var file in productImages)
+                {
+                    var imageUrl = await imageService.SaveImageAsync(file, "Products", existingProduct.Id);
+                    var productImage = new ProductImage
+                    {
+                        ImageUrl = imageUrl,
+                        ProductId = existingProduct.Id
+                    };
+                    existingProduct.ProductImages.Add(productImage);
+                }
+            }
         }
     }
 }
