@@ -1,52 +1,126 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.OrderEntities;
+using VideStore.Domain.ErrorHandling;
 using VideStore.Domain.Interfaces;
 using VideStore.Shared.DTOs.Requests.Orders;
 using VideStore.Shared.DTOs.Responses.Orders;
+using VideStore.Shared.Specifications.OrderSpecifications;
 
 namespace VideStore.Application.Services
 {
-    public class OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : IOrderService
+    public class OrderService : IOrderService
     {
-        public async Task<OrderResponse> CreateOrderAsync(OrderRequest orderRequest)
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IMapper mapper;
+
+        public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
-            throw new NotImplementedException();
+            this.unitOfWork = unitOfWork;
+            this.httpContextAccessor = httpContextAccessor;
+            this.mapper = mapper;
         }
 
-        public async Task<OrderResponse?> GetOrderByIdAsync(int orderId)
+        public async Task<Result<OrderResponse>> CreateOrderAsync(string cartId, OrderRequest orderRequest)
         {
-            throw new NotImplementedException();
+            var userEmail = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null)
+            {
+                return Result.Failure<OrderResponse>(new Error(401, "User is not authenticated"));
+            }
+
+            var order = new Order
+            {
+                BuyerEmail = userEmail,
+                OrderDate = DateTimeOffset.UtcNow,
+                ShippingAddress = mapper.Map<OrderAddress>(orderRequest.ShippingAddress),
+                OrderItems = mapper.Map<ICollection<OrderItem>>(orderRequest.OrderItems),
+                SubTotal = orderRequest.SubTotal,
+                Status = OrderStatus.Pending
+            };
+
+            await unitOfWork.Repository<Order>().AddAsync(order);
+            await unitOfWork.CompleteAsync();
+
+            var orderResponse = mapper.Map<OrderResponse>(order);
+            return Result<OrderResponse>.Success(orderResponse);
         }
 
-        public async Task<IList<OrderResponse>> GetOrdersByBuyerAsync(string buyerEmail)
+        public async Task<Result<OrderResponse?>> GetOrderByIdAsync(int orderId)
         {
-            throw new NotImplementedException();
+            var spec = new OrderWithItemsSpecifications(orderId);
+            var order = await unitOfWork.Repository<Order>().GetEntityAsync(spec);
+
+            if (order == null)
+            {
+                return Result.Failure<OrderResponse?>(new Error(404, "Order not found"));
+            }
+
+            var orderResponse = mapper.Map<OrderResponse>(order);
+            return Result<OrderResponse?>.Success(orderResponse)!;
         }
 
-        public async Task<IList<OrderResponse>> GetAllOrdersAsync()
+        public async Task<Result<IReadOnlyList<OrderResponse>>> GetOrdersForUserAsync()
         {
-            throw new NotImplementedException();
+            var userEmail = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null)
+            {
+                return Result.Failure<IReadOnlyList<OrderResponse>>(new Error(404, "User is not authenticated"));
+            }
+
+            var spec = new OrderWithItemsByUserSpecification(userEmail);
+            var orders = await unitOfWork.Repository<Order>().GetAllAsync(spec);
+
+            var orderResponses = mapper.Map<IReadOnlyList<OrderResponse>>(orders);
+            return Result.Success(orderResponses);
         }
 
-        public async Task<OrderResponse?> UpdateOrderStatusAsync(int orderId, OrderStatus status)
+        public async Task<Result<IReadOnlyList<OrderResponse>>> GetAllOrdersAsync()
         {
-            throw new NotImplementedException();
+            var spec = new OrderWithItemsSpecifications();
+            var orders = await unitOfWork.Repository<Order>().GetAllAsync(spec);
+
+            var orderResponses = mapper.Map<IReadOnlyList<OrderResponse>>(orders);
+            return Result.Success(orderResponses);
         }
 
-        public async Task<bool> CancelOrderAsync(int orderId)
+        public async Task<Result<OrderResponse?>> UpdateOrderStatusAsync(int orderId, OrderStatus status)
         {
-            throw new NotImplementedException();
+            var order = await unitOfWork.Repository<Order>().GetEntityAsync(orderId);
+            if (order == null)
+            {
+                return Result.Failure<OrderResponse?>(new Error(404, "Order not found"));
+            }
+
+            order.Status = status;
+            unitOfWork.Repository<Order>().Update(order);
+            await unitOfWork.CompleteAsync();
+
+            var orderResponse = mapper.Map<OrderResponse>(order);
+            return Result.Success(orderResponse)!;
         }
 
-        public decimal CalculateDeliveryFee(string governorate)
+        public async Task<Result<string>> CancelOrderAsync(int orderId)
         {
-            throw new NotImplementedException();
+            var order = await unitOfWork.Repository<Order>().GetEntityAsync(orderId);
+            if (order == null)
+            {
+                return Result.Failure<string>(new Error(404, "Order not found"));
+            }
+
+            order.Status = OrderStatus.Cancelled;
+            unitOfWork.Repository<Order>().Update(order);
+            await unitOfWork.CompleteAsync();
+
+            return Result.Success<string>("Order cancelled successfully");
         }
 
         public decimal CalculateTotal(decimal subTotal, decimal deliveryFee)
         {
-            throw new NotImplementedException();
+            return subTotal + deliveryFee;
         }
     }
 }

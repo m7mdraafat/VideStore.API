@@ -1,8 +1,9 @@
 ﻿using VideStore.Domain.Common;
+using VideStore.Domain.Entities.ProductEntities;
 
 namespace VideStore.Domain.Entities.CartEntities;
 
-public class CartItem : BaseEntity
+public class CartItem
 {
     public CartItem() { }
 
@@ -22,7 +23,6 @@ public class CartItem : BaseEntity
     public string Color { get; set; } = null!;
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
-
     public decimal Total => GetTotal();
 
     private decimal GetTotal() => Quantity * UnitPrice;

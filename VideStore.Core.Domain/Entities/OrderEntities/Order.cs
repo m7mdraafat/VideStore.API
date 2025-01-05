@@ -8,9 +8,9 @@ public class Order : BaseEntity
     #region Constructors
     public Order() { }
 
-    public Order(string userId, OrderAddress shippingAddress, ICollection<OrderItem> items, decimal subTotal)
+    public Order(string buyerEmail, OrderAddress shippingAddress, ICollection<OrderItem> items, decimal subTotal)
     {
-        UserId = userId;
+        BuyerEmail = buyerEmail;
         ShippingAddress = shippingAddress;
         OrderItems = items;
         SubTotal = subTotal;
@@ -20,7 +20,7 @@ public class Order : BaseEntity
     #endregion
 
     #region Properties
-    public string UserId { get; set; } = null!;
+    public string BuyerEmail { get; set; } = null!;
     public AppUser? AppUser { get; set; } // Optional to avoid circular dependencies
     public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;
     public DateTime? ShippingDate { get; set; }

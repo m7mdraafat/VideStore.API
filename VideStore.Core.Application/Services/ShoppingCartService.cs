@@ -31,7 +31,7 @@ namespace VideStore.Application.Services
             return Result.Success(cartResponse);
         }
 
-        public async Task<Result<ShoppingCartResponse>> GetShoppingCartAsync(string shoppingCartId)
+        public async Task<Result<ShoppingCartResponse>> GetShoppingCartByIdAsync(string shoppingCartId)
         {
             var cart = await cartRepository.GetShoppingCartAsync(shoppingCartId) ?? new ShoppingCart();
 

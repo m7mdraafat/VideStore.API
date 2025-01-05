@@ -24,7 +24,7 @@ namespace VideStore.Api.Controllers.V1
         [HttpGet]
         public async Task<ActionResult<ShoppingCartResponse>> GetShoppingCart(string shoppingCartId)
         {
-            var result = await shoppingCartService.GetShoppingCartAsync(shoppingCartId);
+            var result = await shoppingCartService.GetShoppingCartByIdAsync(shoppingCartId);
 
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }

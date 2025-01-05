@@ -1,4 +1,5 @@
 ﻿using VideStore.Domain.Common;
+using VideStore.Domain.Entities.ProductEntities;
 
 namespace VideStore.Domain.Entities.OrderEntities;
 
@@ -20,6 +21,7 @@ public class OrderItem : BaseEntity
     public Order Order { get; set; } = null!;
 
     public int ProductId { get; set; }
+    public Product Product { get; set; }
     public string ProductName { get; set; } = null!;
     public string ProductImageCover { get; set; } = null!;
 

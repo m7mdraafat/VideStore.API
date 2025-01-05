@@ -1,4 +1,6 @@
-﻿using VideStore.Domain.Entities.OrderEntities;
+﻿using System.Security.Claims;
+using VideStore.Domain.Entities.OrderEntities;
+using VideStore.Domain.ErrorHandling;
 using VideStore.Shared.DTOs.Requests.Orders;
 using VideStore.Shared.DTOs.Responses.Orders;
 
@@ -11,27 +13,27 @@ namespace VideStore.Application.Interfaces
         /// </summary>
         /// <param name="orderRequest">The request object containing order details.</param>
         /// <returns>The created order as a response DTO.</returns>
-        Task<OrderResponse> CreateOrderAsync(OrderRequest orderRequest);
+        Task<Result<OrderResponse>> CreateOrderAsync(string cartId, OrderRequest orderRequest);
 
         /// <summary>
         /// Retrieves an order by its ID.
         /// </summary>
         /// <param name="orderId">The ID of the order.</param>
         /// <returns>The order details as a response DTO, or null if not found.</returns>
-        Task<OrderResponse?> GetOrderByIdAsync(int orderId);
+        Task<Result<OrderResponse?>> GetOrderByIdAsync(int orderId);
 
         /// <summary>
         /// Retrieves all orders for a specific buyer.
         /// </summary>
-        /// <param name="buyerEmail">The email of the buyer.</param>
+        /// <param name="userClaims"></param>
         /// <returns>A list of orders for the specified buyer.</returns>
-        Task<IList<OrderResponse>> GetOrdersByBuyerAsync(string buyerEmail);
+        Task<Result<IReadOnlyList<OrderResponse>>> GetOrdersForUserAsync();
 
         /// <summary>
         /// Retrieves all orders in the system.
         /// </summary>
         /// <returns>A list of all orders.</returns>
-        Task<IList<OrderResponse>> GetAllOrdersAsync();
+        Task<Result<IReadOnlyList<OrderResponse>>> GetAllOrdersAsync();
 
         /// <summary>
         /// Updates the status of an order.
@@ -39,21 +41,15 @@ namespace VideStore.Application.Interfaces
         /// <param name="orderId">The ID of the order.</param>
         /// <param name="status">The new status of the order.</param>
         /// <returns>The updated order as a response DTO, or null if not found.</returns>
-        Task<OrderResponse?> UpdateOrderStatusAsync(int orderId, OrderStatus status);
+        Task<Result<OrderResponse?>> UpdateOrderStatusAsync(int orderId, OrderStatus status);
 
         /// <summary>
         /// Cancels an order by its ID.
         /// </summary>
         /// <param name="orderId">The ID of the order.</param>
         /// <returns>True if the order was successfully canceled, otherwise false.</returns>
-        Task<bool> CancelOrderAsync(int orderId);
+        Task<Result<string>> CancelOrderAsync(int orderId);
 
-        /// <summary>
-        /// Calculates the delivery fee based on the governorate.
-        /// </summary>
-        /// <param name="governorate">The governorate for the delivery address.</param>
-        /// <returns>The calculated delivery fee.</returns>
-        decimal CalculateDeliveryFee(string governorate);
 
         /// <summary>
         /// Calculates the total cost of an order.

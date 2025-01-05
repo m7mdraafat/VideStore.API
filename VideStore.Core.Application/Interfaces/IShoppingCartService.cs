@@ -8,7 +8,7 @@ namespace VideStore.Application.Interfaces
     public interface IShoppingCartService
     {
         Task<Result<ShoppingCartResponse>> CreateOrUpdateShoppingCartAsync(ShoppingCartRequest cartDto);
-        Task<Result<ShoppingCartResponse>> GetShoppingCartAsync(string shoppingCartId);
+        Task<Result<ShoppingCartResponse>> GetShoppingCartByIdAsync(string shoppingCartId);
         Task DeleteShoppingCartAsync(string shoppingCartId); 
     }
 }
