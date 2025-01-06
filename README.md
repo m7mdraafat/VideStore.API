@@ -65,6 +65,8 @@ Access the API at `https://localhost:5001`.
 
 ## 📊 Database ERD
 The **Entity-Relationship Diagram (ERD)** showcases database tables, relationships, and constraints to visualize data flow.
+![Database Scheme](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20042653.png)
+![Hangfire Scheme](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20042738.png)
 
 ---
 
