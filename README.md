@@ -76,35 +76,22 @@ API versioning ensures backward compatibility, supporting version specification 
 ## 🔌 API Endpoints
 
 ### **Products:**
-- `GET /api/products` - Get all products.
-- `GET /api/products/{id}` - Get product by ID.
-- `POST /api/products` - Add a new product.
-- `PUT /api/products/{id}` - Update product details.
-- `DELETE /api/products/{id}` - Delete a product.
-- `GET /api/products/search?query=value` - Search products.
-- `GET /api/products/sort?orderBy=name` - Sort products.
+![Products Endpoints](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20035835.png)
 
 ### **Categories:**
-- `GET /api/categories` - Get all categories.
-- `POST /api/categories` - Add a new category.
+![Categories Endpoints](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20035822.png)
 
 ### **Accounts:**
-- `POST /api/accounts/register` - Register a new user.
-- `POST /api/accounts/login` - Login with credentials.
-- `POST /api/accounts/forgot-password` - Request password reset.
-- `POST /api/accounts/reset-password` - Reset password.
+![Accounts Endpoints](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20035807.png)
 
 ### **Authentications:**
-- `POST /api/auth/refresh-token` - Refresh access tokens.
+![Authentications Endpoints](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20035815.png)
 
 ### **Shopping Cart:**
-- `POST /api/cart/add` - Add item to cart.
-- `GET /api/cart` - Get cart details.
-- `DELETE /api/cart/remove/{id}` - Remove item from cart.
+![Shopping Cart Endpoints](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20035841.png)
 
 ### **Orders:**
-- `POST /api/orders` - Place an order.
-- `GET /api/orders` - Get order history.
+![Orders Endpoints](https://github.com/m7mdraafat/user-assets/blob/master/Screenshot%202025-01-06%20035829.png)
 
 ---
 
@@ -133,5 +120,4 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **GitHub**: [m7mdraafat](https://github.com/m7mdraafat)
 - **LinkedIn**: [Mohamed Raafat](https://www.linkedin.com/in/mohamed-raafat-701290252/)
 
-For more details, visit the [VideStore API Repository](https://github.com/m7mdraafat/VideStore.API).
 
