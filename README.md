@@ -20,7 +20,9 @@ Vide Store is a scalable and secure e-commerce backend API built using **ASP.NET
 - **Background Jobs**: Utilizes **Hangfire** for scheduled tasks like email dispatching and order processing.
 - **Database Management**: Built on **Microsoft SQL Server** with a structured relational model.
 - **Role-Based Access Control**: Provides granular access permissions using **ASP.NET Core Identity**.
-- **Design Patterns**: Utilizes **Repository Pattern**, **Unit of Work**, and **Specification Pattern** for organized code.
+- **Search and Sorting**: Implements flexible search and sorting functionalities.
+- **Repository Pattern with Unit of Work**: Ensures organized data access.
+- **Specification Design Pattern**: Enables dynamic queries and complex filtering for fetching data.
 
 ---
 
@@ -79,6 +81,8 @@ API versioning ensures backward compatibility, supporting version specification 
 - `POST /api/products` - Add a new product.
 - `PUT /api/products/{id}` - Update product details.
 - `DELETE /api/products/{id}` - Delete a product.
+- `GET /api/products/search?query=value` - Search products.
+- `GET /api/products/sort?orderBy=name` - Sort products.
 
 ### **Categories:**
 - `GET /api/categories` - Get all categories.
@@ -129,4 +133,5 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **GitHub**: [m7mdraafat](https://github.com/m7mdraafat)
 - **LinkedIn**: [Mohamed Raafat](https://www.linkedin.com/in/mohamed-raafat-701290252/)
 
+For more details, visit the [VideStore API Repository](https://github.com/m7mdraafat/VideStore.API).
 
