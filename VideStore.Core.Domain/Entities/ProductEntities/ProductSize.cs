@@ -5,10 +5,10 @@ namespace VideStore.Domain.Entities.ProductEntities;
 
 public class ProductSize : BaseEntity
 {
-    public int ProductId { get; set; }
+    public string ProductId { get; set; } = null!;
     [JsonIgnore]
     public Product Product { get; set; } = null!;
-    public int SizeId { get; set; }
+    public string SizeId { get; set; } = null!;
     public Size Size { get; set; } = null!;
 
 }

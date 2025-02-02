@@ -11,10 +11,10 @@ namespace VideStore.Application.Interfaces
     public interface IProductService
     {
         Task<Result<PaginationToReturn<ProductResponse>>> GetAllProductsAsync(ProductSpecifications spec);
-        Task<Result<ProductResponse>> GetProductAsync(int id);
+        Task<Result<ProductResponse>> GetProductAsync(string id);
         Task<Result<ProductResponse>> CreateProductAsync(ProductRequest productRequest);
-        Task<Result<ProductResponse>> UpdateProductAsync(int id, ProductRequest productRequest);
-        Task<Result<string>> DeleteProductAsync(int id);
+        Task<Result<ProductResponse>> UpdateProductAsync(string id, ProductRequest productRequest);
+        Task<Result<string>> DeleteProductAsync(string id);
 
 
     }

@@ -14,9 +14,4 @@
     <ProjectReference Include="..\VideStore.Core.Domain\VideStore.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\Requests\ShoppingCart\" />
-    <Folder Include="DTOs\Responses\ShoppingCart\" />
-  </ItemGroup>
-
 </Project>

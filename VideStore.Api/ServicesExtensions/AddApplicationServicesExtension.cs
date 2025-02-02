@@ -21,6 +21,8 @@ namespace VideStore.Api.ServicesExtensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICartService, CartService>();
+
             // external services
 
             services.AddTransient<IEmailService, EmailService>();

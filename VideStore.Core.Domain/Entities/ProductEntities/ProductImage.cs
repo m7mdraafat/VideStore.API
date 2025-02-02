@@ -7,7 +7,7 @@ public class ProductImage : BaseEntity
 {
     public string ImageUrl { get; set; } = null!;
 
-    public int ProductId {get; set; }
+    public string ProductId { get; set; } = null!;
     [JsonIgnore]
     public Product Product { get; set; } = null!;
 

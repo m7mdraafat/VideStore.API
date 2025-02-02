@@ -8,7 +8,8 @@ namespace VideStore.Domain.Entities.IdentityEntities
         public string DisplayName { get; set; } = null!;
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public virtual ICollection<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
-        public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
+        public virtual ICollection<Order>? Orders { get; set; } 
+        public virtual ICollection<IdentityCode>? IdentityCodes { get; set; } 
 
     }
 }

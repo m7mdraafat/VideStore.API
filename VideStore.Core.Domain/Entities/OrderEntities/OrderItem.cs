@@ -7,7 +7,7 @@ public class OrderItem : BaseEntity
 {
     public OrderItem() { }
 
-    public OrderItem(int orderId, int productId, string productName, string productImageCover ,int quantity, decimal unitPrice)
+    public OrderItem(string orderId, string productId, string productName, string productImageCover ,int quantity, decimal unitPrice)
     {
         OrderId = orderId;
         ProductId = productId;
@@ -17,10 +17,10 @@ public class OrderItem : BaseEntity
         ProductImageCover = productImageCover;
     }
 
-    public int OrderId { get; set; }
+    public string OrderId { get; set; } = null!;
     public Order Order { get; set; } = null!;
 
-    public int ProductId { get; set; }
+    public string ProductId { get; set; }
     public Product Product { get; set; }
     public string ProductName { get; set; } = null!;
     public string ProductImageCover { get; set; } = null!;

@@ -13,11 +13,11 @@ public class Product : BaseEntity
     public int Sold { get; set; } = 0;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set;} = DateTime.UtcNow;
-    public int CategoryId { get; set; }
+    public string CategoryId { get; set; } = null!;
     [JsonIgnore]
     public Category Category { get; set; } = null!;
 
-    public int ColorId { get; set; }
+    public string ColorId { get; set; } = null!;
     public Color Color { get; set; } = null!;
 
     public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();

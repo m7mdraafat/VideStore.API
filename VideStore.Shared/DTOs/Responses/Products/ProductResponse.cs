@@ -2,9 +2,10 @@
 
 public class ProductResponse
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
+    public int StockQuantity { get; set; } = 0!;
     public decimal Price { get; set; }
     public double RatingsAverage { get; set; }
     public int Sold { get; set; }

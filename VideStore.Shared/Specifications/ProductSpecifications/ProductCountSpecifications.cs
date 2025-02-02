@@ -10,7 +10,7 @@ namespace VideStore.Shared.Specifications.ProductSpecifications
             Includes.Add(q=>q.Include(p=>p.Category));
             WhereCriteria =
                 p => (string.IsNullOrEmpty(specifications.Search) || p.Name.ToLower().Contains(specifications.Search.ToLower())) &&
-                     (!specifications.CategoryId.HasValue || p.CategoryId == specifications.CategoryId.Value);
+                     (string.IsNullOrEmpty(specifications.CategoryId) || p.CategoryId == specifications.CategoryId);
         }
     }
 }

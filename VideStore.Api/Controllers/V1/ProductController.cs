@@ -21,8 +21,8 @@ namespace VideStore.Api.Controllers.V1
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult> GetProducts(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetProduct(string id)
         {
             var result = await productService.GetProductAsync(id);
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
@@ -37,9 +37,9 @@ namespace VideStore.Api.Controllers.V1
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
 
         }
-        [HttpDelete("{id:int}")]
+        [HttpDelete]
         [Authorize]
-        public async Task<ActionResult> DeleteProduct(int id)
+        public async Task<ActionResult> DeleteProduct(string id)
         {
             var result = await productService.DeleteProductAsync(id);
 
@@ -47,9 +47,9 @@ namespace VideStore.Api.Controllers.V1
 
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut]
         [Authorize]
-        public async Task<ActionResult> UpdateProduct(int id, [FromForm]ProductRequest productRequest)
+        public async Task<ActionResult> UpdateProduct(string id, [FromForm]ProductRequest productRequest)
         {
             var result = await productService.UpdateProductAsync(id, productRequest);
             

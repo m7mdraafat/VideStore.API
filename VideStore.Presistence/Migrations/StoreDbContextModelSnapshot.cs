@@ -22,6 +22,45 @@ namespace VideStore.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Cart", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("GuestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("CartItem", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CartId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.ToTable("CartItems");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -230,11 +269,8 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.IdentityEntities.IdentityCode", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("ActivationTime")
                         .HasColumnType("datetime2");
@@ -245,7 +281,8 @@ namespace VideStore.Persistence.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -265,11 +302,8 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.IdentityEntities.UserAddress", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AddressLine")
                         .IsRequired()
@@ -312,11 +346,8 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.Order", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
@@ -347,17 +378,16 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.OrderEntities.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProductImageCover")
                         .IsRequired()
@@ -384,11 +414,8 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoverImageUrl")
                         .IsRequired()
@@ -409,11 +436,8 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Color", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ColorHexCode")
                         .IsRequired()
@@ -430,17 +454,16 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Product", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ColorId")
-                        .HasColumnType("int");
+                    b.Property<string>("ColorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -481,19 +504,17 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.ProductImage", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -504,14 +525,14 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.ProductSize", b =>
                 {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("SizeId")
-                        .HasColumnType("int");
+                    b.Property<string>("SizeId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductId", "SizeId");
 
@@ -522,11 +543,8 @@ namespace VideStore.Persistence.Migrations
 
             modelBuilder.Entity("VideStore.Domain.Entities.ProductEntities.Size", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SizeName")
                         .IsRequired()
@@ -536,6 +554,17 @@ namespace VideStore.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sizes");
+                });
+
+            modelBuilder.Entity("CartItem", b =>
+                {
+                    b.HasOne("Cart", "Cart")
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -596,11 +625,8 @@ namespace VideStore.Persistence.Migrations
                             b1.Property<string>("AppUserId")
                                 .HasColumnType("nvarchar(450)");
 
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+                            b1.Property<string>("Id")
+                                .HasColumnType("nvarchar(450)");
 
                             b1.Property<DateTime>("CreatedAt")
                                 .HasColumnType("datetime2");
@@ -613,8 +639,7 @@ namespace VideStore.Persistence.Migrations
 
                             b1.Property<string>("Token")
                                 .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("AppUserId", "Id");
 
@@ -630,7 +655,7 @@ namespace VideStore.Persistence.Migrations
             modelBuilder.Entity("VideStore.Domain.Entities.IdentityEntities.IdentityCode", b =>
                 {
                     b.HasOne("VideStore.Domain.Entities.IdentityEntities.AppUser", "User")
-                        .WithMany()
+                        .WithMany("IdentityCodes")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -657,8 +682,8 @@ namespace VideStore.Persistence.Migrations
 
                     b.OwnsOne("VideStore.Domain.Entities.OrderEntities.OrderAddress", "ShippingAddress", b1 =>
                         {
-                            b1.Property<int>("OrderId")
-                                .HasColumnType("int");
+                            b1.Property<string>("OrderId")
+                                .HasColumnType("nvarchar(450)");
 
                             b1.Property<string>("City")
                                 .IsRequired()
@@ -771,8 +796,15 @@ namespace VideStore.Persistence.Migrations
                     b.Navigation("Size");
                 });
 
+            modelBuilder.Entity("Cart", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("VideStore.Domain.Entities.IdentityEntities.AppUser", b =>
                 {
+                    b.Navigation("IdentityCodes");
+
                     b.Navigation("Orders");
 
                     b.Navigation("UserAddresses");

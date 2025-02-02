@@ -31,7 +31,7 @@ namespace VideStore.Application.Services
             return Result.Success<PaginationToReturn<ProductResponse>>(productsWithPagination); 
         }
 
-        public async Task<Result<ProductResponse>> GetProductAsync(int id)
+        public async Task<Result<ProductResponse>> GetProductAsync(string id)
         {
             var specifications = new ProductWithAllRelatedDataSpecifications(id);
 
@@ -73,7 +73,7 @@ namespace VideStore.Application.Services
             }
 
             // Ensure product ID is set
-            if (product.Id <= 0)
+            if (string.IsNullOrEmpty(product.Id))
             {
                 return Result.Failure<ProductResponse>(new Error(500,
                     "Product ID is not valid after saving. Check the database and repository logic."));
@@ -136,7 +136,7 @@ namespace VideStore.Application.Services
             return Result.Success(productResponse);
         }
 
-        public async Task<Result<ProductResponse>> UpdateProductAsync(int id, ProductRequest productRequest)
+        public async Task<Result<ProductResponse>> UpdateProductAsync(string id, ProductRequest productRequest)
         {
             // Retrieve the existing product with related data
             var spec = new ProductWithAllRelatedDataSpecifications(id);
@@ -216,7 +216,7 @@ namespace VideStore.Application.Services
             return Result.Success(productResponse);
         }
 
-        public async Task<Result<string>> DeleteProductAsync(int id)
+        public async Task<Result<string>> DeleteProductAsync(string id)
         {
             var product = await unitOfWork.Repository<Product>().GetEntityAsync(id);
 

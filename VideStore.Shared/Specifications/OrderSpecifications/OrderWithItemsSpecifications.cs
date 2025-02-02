@@ -12,7 +12,7 @@ namespace VideStore.Shared.Specifications.OrderSpecifications
             Includes.Add(q => q.Include(o => o.OrderItems));
         }
 
-        public OrderWithItemsSpecifications(int orderId)
+        public OrderWithItemsSpecifications(string orderId)
         {
             WhereCriteria = p => p.Id == orderId;
             Includes.Add(q => q.Include(o => o.OrderItems));

@@ -35,6 +35,7 @@ namespace VideStore.Persistence.Repositories
                 throw new InvalidOperationException("No transaction is started.");
             }
             await _transaction.CommitAsync();
+           
             _transaction.Dispose();
             _transaction = null;
         }

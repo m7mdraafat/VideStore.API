@@ -20,8 +20,8 @@ namespace VideStore.Api.Controllers.V1
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult> GetByIdAsync(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetByIdAsync(string id)
         {
             var result = await categoryService.GetCategoryByIdAsync(id);
 
@@ -39,9 +39,9 @@ namespace VideStore.Api.Controllers.V1
 
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut]
         [Authorize]
-        public async Task<ActionResult> UpdateAsync(int id, [FromForm]CategoryRequest categoryRequest)
+        public async Task<ActionResult> UpdateAsync(string id, [FromForm]CategoryRequest categoryRequest)
         {
             var result = await categoryService.UpdateCategoryAsync(id, categoryRequest);
 
@@ -51,7 +51,7 @@ namespace VideStore.Api.Controllers.V1
 
         [HttpDelete]
         [Authorize]
-        public async Task<ActionResult> DeleteAsync(int id)
+        public async Task<ActionResult> DeleteAsync(string id)
         {
             var result = await categoryService.DeleteCategoryAsync(id);
 

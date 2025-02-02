@@ -24,8 +24,7 @@ namespace VideStore.Presistence.Context.Configurations
             builder.OwnsMany(x => x.RefreshTokens, rt =>
             {
                 rt.Property(x => x.Token)
-                  .IsRequired()
-                  .HasMaxLength(200);
+                  .IsRequired();
                 rt.Property(x => x.ExpireAt)
                   .IsRequired();
                 rt.Property(x => x.CreatedAt)

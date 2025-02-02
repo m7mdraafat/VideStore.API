@@ -29,7 +29,7 @@ namespace VideStore.Api.Controllers.V1
         }
 
         [HttpGet("{orderId}")]
-        public async Task<IActionResult> GetOrderById(int orderId)
+        public async Task<IActionResult> GetOrderById(string orderId)
         {
             var result = await _orderService.GetOrderByIdAsync(orderId);
             if (result.IsSuccess)
@@ -62,7 +62,7 @@ namespace VideStore.Api.Controllers.V1
         }
 
         [HttpPut("{orderId}/status")]
-        public async Task<IActionResult> UpdateOrderStatus(int orderId, [FromBody] OrderStatus status)
+        public async Task<IActionResult> UpdateOrderStatus(string orderId, [FromBody] OrderStatus status)
         {
             var result = await _orderService.UpdateOrderStatusAsync(orderId, status);
             if (result.IsSuccess)
@@ -73,7 +73,7 @@ namespace VideStore.Api.Controllers.V1
         }
 
         [HttpDelete("{orderId}")]
-        public async Task<IActionResult> CancelOrder(int orderId)
+        public async Task<IActionResult> CancelOrder(string orderId)
         {
             var result = await _orderService.CancelOrderAsync(orderId);
             if (result.IsSuccess)

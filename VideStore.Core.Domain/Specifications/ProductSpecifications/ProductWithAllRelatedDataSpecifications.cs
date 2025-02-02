@@ -17,7 +17,7 @@ namespace VideStore.Domain.Specifications.ProductSpecifications
             WhereCriteria =
                 p => (string.IsNullOrEmpty(specifications.Search) ||
                       p.Name.ToLower().Contains(specifications.Search.ToLower())) &&
-                     (!specifications.CategoryId.HasValue || p.CategoryId == specifications.CategoryId.Value);
+                     (string.IsNullOrEmpty(specifications.CategoryId) || p.CategoryId == specifications.CategoryId);
 
             // Apply sorting logic
             if (!string.IsNullOrEmpty(specifications.Sort))
@@ -59,7 +59,7 @@ namespace VideStore.Domain.Specifications.ProductSpecifications
             ApplyPagination((specifications.PageIndex - 1) * specifications.PageSize, specifications.PageSize);
         }
 
-        public ProductWithAllRelatedDataSpecifications(int id)
+        public ProductWithAllRelatedDataSpecifications(string id)
         {
             WhereCriteria = p => p.Id == id;
             Includes.Add(q => q.Include(p => p.Category));

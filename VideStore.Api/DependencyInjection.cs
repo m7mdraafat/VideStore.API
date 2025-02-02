@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using VideStore.Api.ServicesExtensions;
 using VideStore.Domain.ConfigurationsData;
 using VideStore.Infrastructure;
@@ -33,7 +35,17 @@ namespace VideStore.Api
 
             services.AddAuthConfigurations(jwtData, googleData);
 
-            services.AddRedis(databaseConnections.RedisConnection); 
+            services.AddDistributedCache(configuration);
+
+            services.Configure<JsonSerializerOptions>(options =>
+            {
+                options.PropertyNameCaseInsensitive = true;
+                options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.WriteIndented = false;
+                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            });
+
+            //services.AddRedis(databaseConnections.RedisConnection); 
 
             services.AddApplicationServices();
 
