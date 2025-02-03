@@ -5,7 +5,7 @@ using VideStore.Domain.Interfaces;
 
 namespace VideStore.Shared.Specifications
 {
-    public class BaseSpecifications<T> : ISpecifications<T> where T : BaseEntity
+    public class BaseSpecifications<T> : ISpecifications<T> where T : class
     {
         public Expression<Func<T, bool>> WhereCriteria { get; set; }
         public List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> Includes { get; set; } = new List<Func<IQueryable<T>, IIncludableQueryable<T, object>>>(); // Correct initialization

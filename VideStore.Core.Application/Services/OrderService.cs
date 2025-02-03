@@ -1,126 +1,142 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+﻿using Microsoft.Extensions.Logging;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.OrderEntities;
+using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.ErrorHandling;
 using VideStore.Domain.Interfaces;
-using VideStore.Shared.DTOs.Requests.Orders;
-using VideStore.Shared.DTOs.Responses.Orders;
-using VideStore.Shared.Specifications.OrderSpecifications;
+using VideStore.Shared.DTOs.Cart;
+using VideStore.Shared.DTOs.Order;
 
 namespace VideStore.Application.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IMapper mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICartService _cartService;
+        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public OrderService(
+            IUnitOfWork unitOfWork,
+            ICartService cartService,
+            ILogger<OrderService> logger)
         {
-            this.unitOfWork = unitOfWork;
-            this.httpContextAccessor = httpContextAccessor;
-            this.mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _cartService = cartService;
+            _logger = logger;
         }
 
-        public async Task<Result<OrderResponse>> CreateOrderAsync(string cartId, OrderRequest orderRequest)
+        public async Task<Result<OrderDto>> CreateOrderAsync(
+            string? userId, CreateOrderRequest request)
         {
-            var userEmail = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
-            if (userEmail == null)
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
             {
-                return Result.Failure<OrderResponse>(new Error(401, "User is not authenticated"));
+                // 1. Get cart items
+                var cartResult = await _cartService.GetCartAsync(userId, null);
+                if (!cartResult.IsSuccess || cartResult.Value?.Items.Count == 0)
+                    return Result.Failure<OrderDto>(new Error(400, "Cart is empty"));
+
+                // 2. Validate stock and prices
+                var validationResult = await ValidateCartItems(cartResult.Value!.Items);
+                if (!validationResult.IsSuccess)
+                    return Result.Failure<OrderDto>(new Error(400, "Invalid cart items, Please try again."));
+
+                // 4. Create order
+                var orderItems = MapToOrderItems(cartResult.Value.Items);
+                var order = new Order(
+                    userId!,
+                    request.ShippingAddress,
+                    orderItems);
+
+                await _unitOfWork.Repository<Order>().AddAsync(order);
+
+                // 5. Update stock
+                await UpdateProductStock(cartResult.Value.Items);
+
+                // 6. Clear cart
+                await _cartService.ClearCartAsync(userId, null);
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                return Result.Success(await MapToDto(order));
             }
-
-            var order = new Order
+            catch (Exception ex)
             {
-                BuyerEmail = userEmail,
-                OrderDate = DateTimeOffset.UtcNow,
-                ShippingAddress = mapper.Map<OrderAddress>(orderRequest.ShippingAddress),
-                OrderItems = mapper.Map<ICollection<OrderItem>>(orderRequest.OrderItems),
-                SubTotal = orderRequest.SubTotal,
-                Status = OrderStatus.Pending
-            };
-
-            await unitOfWork.Repository<Order>().AddAsync(order);
-            await unitOfWork.CompleteAsync();
-
-            var orderResponse = mapper.Map<OrderResponse>(order);
-            return Result<OrderResponse>.Success(orderResponse);
-        }
-
-        public async Task<Result<OrderResponse?>> GetOrderByIdAsync(int orderId)
-        {
-            var spec = new OrderWithItemsSpecifications(orderId);
-            var order = await unitOfWork.Repository<Order>().GetEntityAsync(spec);
-
-            if (order == null)
-            {
-                return Result.Failure<OrderResponse?>(new Error(404, "Order not found"));
+                await _unitOfWork.RollbackTransactionAsync();
+                _logger.LogError(ex, "Order creation failed");
+                return Result.Failure<OrderDto>(new Error(500, "Order creation failed"));
             }
-
-            var orderResponse = mapper.Map<OrderResponse>(order);
-            return Result<OrderResponse?>.Success(orderResponse)!;
         }
 
-        public async Task<Result<IReadOnlyList<OrderResponse>>> GetOrdersForUserAsync()
+        private async Task<Result> ValidateCartItems(List<CartItemDto> cartItems)
         {
-            var userEmail = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
-            if (userEmail == null)
+            foreach (var item in cartItems)
             {
-                return Result.Failure<IReadOnlyList<OrderResponse>>(new Error(404, "User is not authenticated"));
+                var product = await _unitOfWork.Repository<Product>().GetEntityAsync(item.ProductId);
+                if (product == null)
+                    return Result.Failure(new Error(404, $"Product {item.ProductId} not found"));
+
+                if (product.StockQuantity < item.Quantity)
+                    return Result.Failure(new Error(400, $"Insufficient stock for {product.Name}"));
             }
-
-            var spec = new OrderWithItemsByUserSpecification(userEmail);
-            var orders = await unitOfWork.Repository<Order>().GetAllAsync(spec);
-
-            var orderResponses = mapper.Map<IReadOnlyList<OrderResponse>>(orders);
-            return Result.Success(orderResponses);
+            return Result.Success();
         }
 
-        public async Task<Result<IReadOnlyList<OrderResponse>>> GetAllOrdersAsync()
+        private List<OrderItem> MapToOrderItems(List<CartItemDto> cartItems)
         {
-            var spec = new OrderWithItemsSpecifications();
-            var orders = await unitOfWork.Repository<Order>().GetAllAsync(spec);
-
-            var orderResponses = mapper.Map<IReadOnlyList<OrderResponse>>(orders);
-            return Result.Success(orderResponses);
+            return cartItems.Select(item => new OrderItem(
+                item.ProductId,
+                item.ProductName,
+                item.UnitPrice,
+                item.Quantity,
+                item.ProductImageUrl
+            )).ToList();
         }
 
-        public async Task<Result<OrderResponse?>> UpdateOrderStatusAsync(int orderId, OrderStatus status)
+        private async Task UpdateProductStock(List<CartItemDto> cartItems)
         {
-            var order = await unitOfWork.Repository<Order>().GetEntityAsync(orderId);
-            if (order == null)
+            foreach (var item in cartItems)
             {
-                return Result.Failure<OrderResponse?>(new Error(404, "Order not found"));
+                var product = await _unitOfWork.Repository<Product>().GetEntityAsync(item.ProductId);
+                product!.StockQuantity -= item.Quantity;
+                _unitOfWork.Repository<Product>().Update(product);
             }
-
-            order.Status = status;
-            unitOfWork.Repository<Order>().Update(order);
-            await unitOfWork.CompleteAsync();
-
-            var orderResponse = mapper.Map<OrderResponse>(order);
-            return Result.Success(orderResponse)!;
         }
 
-        public async Task<Result<string>> CancelOrderAsync(int orderId)
+        private async Task<OrderDto> MapToDto(Order order)
         {
-            var order = await unitOfWork.Repository<Order>().GetEntityAsync(orderId);
-            if (order == null)
-            {
-                return Result.Failure<string>(new Error(404, "Order not found"));
-            }
-
-            order.Status = OrderStatus.Cancelled;
-            unitOfWork.Repository<Order>().Update(order);
-            await unitOfWork.CompleteAsync();
-
-            return Result.Success<string>("Order cancelled successfully");
+            return new OrderDto(
+                order.Id,
+                order.OrderDate,
+                order.Status,
+                order.ShippingAddress,
+                order.Items.Select(i => new OrderItemDto(
+                    i.ProductId,
+                    i.ProductName,
+                    i.UnitPrice,
+                    i.Quantity,
+                    i.PictureUrl
+                )).ToList(),
+                order.Items.Sum(i => i.UnitPrice * i.Quantity)
+            );
         }
 
-        public decimal CalculateTotal(decimal subTotal, decimal deliveryFee)
+        public Task<Result<OrderDto>> GetOrderDetailsAsync(int orderId, string userId)
         {
-            return subTotal + deliveryFee;
+            throw new NotImplementedException();
         }
+
+        public Task<Result<List<OrderDto>>> GetUserOrdersAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result> CancelOrderAsync(int orderId, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+     
     }
 }

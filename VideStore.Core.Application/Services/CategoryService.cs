@@ -40,7 +40,7 @@ namespace VideStore.Application.Services
 
             return Result.Failure<Category>(new Error(500, "Error occurred while saving category."));
         }
-        public async Task<Result<Category>> GetCategoryByIdAsync(int id)
+        public async Task<Result<Category>> GetCategoryByIdAsync(string id)
         {
             var spec = new BaseSpecifications<Category>
             {
@@ -77,7 +77,7 @@ namespace VideStore.Application.Services
             return Result.Success<IReadOnlyList<Category>>(categories);
         }
 
-        public async Task<Result<Category>> UpdateCategoryAsync(int id, CategoryRequest categoryRequest)
+        public async Task<Result<Category>> UpdateCategoryAsync(string id, CategoryRequest categoryRequest)
         {
             var category = await unitOfWork.Repository<Category>().GetEntityAsync(id);
             if (category == null)
@@ -114,7 +114,7 @@ namespace VideStore.Application.Services
         }
 
 
-        public async Task<Result<string>> DeleteCategoryAsync(int id)
+        public async Task<Result<string>> DeleteCategoryAsync(string id)
         {
             var category = await unitOfWork.Repository<Category>().GetEntityAsync(id);
 

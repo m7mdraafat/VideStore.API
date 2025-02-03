@@ -6,7 +6,7 @@ namespace VideStore.Application.Services
 {
     public class ImageService(IWebHostEnvironment environment) : IImageService
     {
-        public async Task<string> SaveImageAsync(IFormFile file, string folder, int id)
+        public async Task<string> SaveImageAsync(IFormFile file, string folder, string id)
         {
             if (file == null || file.Length == 0)
             {

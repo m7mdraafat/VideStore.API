@@ -1,8 +1,13 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
+using System;
+using VideStore.Domain.Interfaces;
 using VideStore.Persistence.Context;
+using VideStore.Persistence.Repositories;
 
 namespace VideStore.Persistence;
 public static class ServiceExtensions
@@ -11,7 +16,8 @@ public static class ServiceExtensions
     {
         services.AddDbContext<StoreDbContext>(contextOptions =>
         {
-            contextOptions.UseSqlServer(connectionString);
+            contextOptions.UseSqlServer(connectionString,
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
         });
 
         return services;
@@ -24,6 +30,17 @@ public static class ServiceExtensions
         return services;
 
     }
+    public static IServiceCollection AddDistributedCache(this IServiceCollection services, IConfiguration configuration)
+    {
 
+        // Caching
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("Redis");
+            options.InstanceName = "VideStore_";
+        });
+
+        return services;
+    }
 
 }

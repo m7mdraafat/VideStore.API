@@ -8,11 +8,11 @@ namespace VideStore.Application.Interfaces
     public interface ICategoryService
     {
         Task<Result<Category>> CreateCategoryAsync(CategoryRequest request);
-        Task<Result<Category>> GetCategoryByIdAsync(int id);
+        Task<Result<Category>> GetCategoryByIdAsync(string id);
         Task<Result<IReadOnlyList<Category>>> GetAllCategoriesAsync();
         Task<Result<IReadOnlyList<Category>>> SearchAsync(string searchQuery);
-        Task<Result<Category>> UpdateCategoryAsync(int id, CategoryRequest request);
-        Task<Result<string>> DeleteCategoryAsync(int id);
+        Task<Result<Category>> UpdateCategoryAsync(string id, CategoryRequest request);
+        Task<Result<string>> DeleteCategoryAsync(string id);
 
     }
 }

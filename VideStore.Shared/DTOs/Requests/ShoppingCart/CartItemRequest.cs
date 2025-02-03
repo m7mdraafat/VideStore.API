@@ -1,15 +1,23 @@
-﻿namespace VideStore.Shared.DTOs.Requests.ShoppingCart
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace VideStore.Shared.DTOs.Requests.ShoppingCart
 {
     public class CartItemRequest
     {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; } = string.Empty;
-        public string ProductImageCover { get; set; } = null!;
-        public string Sizes { get; set; } = null!;
-        public string Color { get; set; } = null!;
+        [Required]
+        public string ProductId { get; set; } = null!;
+
+        [Required]
+        public string CartId { get; set; } = null!;
+
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
+        public decimal PriceAtAddition { get; set; }
+
+        [Required]
+        public DateTime AddedAt { get; set; }
     }
 
-    
 }

@@ -21,7 +21,6 @@ app.UseCors("AllowOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.UseHangfireDashboardAndRecurringJob(builder.Services); 

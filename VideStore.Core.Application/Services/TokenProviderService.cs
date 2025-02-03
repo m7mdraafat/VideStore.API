@@ -26,44 +26,57 @@ namespace VideStore.Application.Services
         #region Create Access Token By RefreshToken
         public async Task<Result<AppUserResponse>> CreateAccessTokenByRefreshTokenAsync()
         {
-            var refreshTokenFromCookie = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"];
-
-            var user = userManager.Users
-                .SingleOrDefault(u => u.RefreshTokens!.Any(t => t.Token == refreshTokenFromCookie));
-
-            if (user?.RefreshTokens is null)
-                return Result.Failure<AppUserResponse>(new Error(401, "Invalid or inactive refresh token."));
-
-            var refreshToken = user.RefreshTokens
-                .Single(t => t.Token == refreshTokenFromCookie);
-
-            if (refreshToken.IsActive is false)
-                return Result.Failure<AppUserResponse>(new Error(401, "Invalid or inactive refresh token."));
-
-            refreshToken.RevokedAt = DateTime.UtcNow;
-
-            // generate new Refresh token and add it to user
-            var newRefreshToken = await GenerateRefreshTokenAsync();
-            user.RefreshTokens.Add(newRefreshToken);
-
-            await userManager.UpdateAsync(user);
-
-            // new JWT Token
-            var accessToken = await GenerateAccessTokenAsync(user);
-
-            var userResponse = new AppUserResponse
+            try
             {
-                Email = user.Email!,
-                FirstName = user.DisplayName.Split(' ')[0],
-                LastName = user.DisplayName.Split(" ")[1],
-                PhoneNumber = user.PhoneNumber!,
-                Role = (await userManager.GetRolesAsync(user)).FirstOrDefault(),
-                Token = accessToken,
-                RefreshTokenExpiration = newRefreshToken.ExpireAt.ToString("dd/MM/yyyy hh:mm tt"),
-            };
-            await SetRefreshTokenInCookieAsync(newRefreshToken.Token, newRefreshToken.ExpireAt);
+                var refreshToken = httpContextAccessor.HttpContext!.Request.Cookies["refreshToken"];
+                if (string.IsNullOrEmpty(refreshToken))
+                    return Result.Failure<AppUserResponse>(new Error(401, "Refresh token required"));
 
-            return Result.Success(userResponse);
+                var user = await userManager.Users
+                    .Include(u => u.RefreshTokens)
+                    .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
+
+                if (user == null)
+                    return Result.Failure<AppUserResponse>(new Error(404, "User not found"));
+
+                var existingRefreshToken = user.RefreshTokens
+                    .FirstOrDefault(t => t.Token == refreshToken);
+
+                if (existingRefreshToken == null || !existingRefreshToken.IsActive)
+                    return Result.Failure<AppUserResponse>(new Error(401, "Invalid refresh token"));
+
+                // Revoke current refresh token
+                existingRefreshToken.RevokedAt = DateTime.UtcNow;
+
+                // Generate new tokens
+                var newRefreshToken = await GenerateRefreshTokenAsync();
+                user.RefreshTokens.Add(newRefreshToken);
+
+                var accessToken = await GenerateAccessTokenAsync(user);
+
+                // Update user with new tokens
+                var updateResult = await userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                    return Result.Failure<AppUserResponse>(new Error(500, "Failed to update user tokens"));
+
+                // Set response values
+                await SetRefreshTokenInCookieAsync(newRefreshToken.Token, newRefreshToken.ExpireAt);
+
+                return Result.Success(new AppUserResponse
+                {
+                    Email = user.Email!,
+                    FirstName = user.DisplayName.Split(' ')[0],
+                    LastName = user.DisplayName.Split(' ')[1],
+                    PhoneNumber = user.PhoneNumber!,
+                    Role = (await userManager.GetRolesAsync(user)).FirstOrDefault()!,
+                    Token = accessToken,
+                    RefreshTokenExpiration = newRefreshToken.ExpireAt.ToString("o") // ISO 8601 format
+                });
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<AppUserResponse>(new Error(500, $"Token refresh failed: {ex.Message}"));
+            }
         }
         #endregion
 
@@ -92,31 +105,32 @@ namespace VideStore.Application.Services
         {
             var authClaims = new List<Claim>
             {
-                new (ClaimTypes.GivenName, user.UserName!),
-                new (ClaimTypes.Email, user.Email!),
-                new (ClaimTypes.NameIdentifier, user.Id)
+                new(JwtRegisteredClaimNames.NameId, user.Id),
+                new(JwtRegisteredClaimNames.GivenName, user.UserName!),
+                new(JwtRegisteredClaimNames.Email, user.Email!),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var userRoles = await userManager.GetRolesAsync(user);
             authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            // secretKey
             var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtData.SecretKey));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Subject = new ClaimsIdentity(authClaims),
                 Expires = DateTime.UtcNow.AddMinutes(_jwtData.DurationInMinutes),
-                Claims = authClaims.ToDictionary(c => c.Type, c => (object)c.Value),
                 Audience = _jwtData.ValidAudience,
                 Issuer = _jwtData.ValidIssuer,
-                SigningCredentials = new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature),
-                // EncryptingCredentials = new EncryptingCredentials(TokenEncryption.RsaKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes128CbcHmacSha256)
+                SigningCredentials = new SigningCredentials(
+                    authKey,
+                    SecurityAlgorithms.HmacSha256Signature
+                )
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            // Create token and return encrypted JWT (JWE) 
             return tokenHandler.WriteToken(token);
         }
         #endregion
@@ -125,17 +139,14 @@ namespace VideStore.Application.Services
         public async Task<RefreshToken> GenerateRefreshTokenAsync()
         {
             var randomNumber = new byte[32];
-
-#pragma warning disable SYSLIB0023
-            using var generator = new RNGCryptoServiceProvider();
-#pragma warning restore SYSLIB0023
+            using var generator = RandomNumberGenerator.Create();
             generator.GetBytes(randomNumber);
 
             return new RefreshToken
             {
                 Token = Convert.ToBase64String(randomNumber),
                 ExpireAt = DateTime.UtcNow.AddDays(_jwtData.RefreshTokenExpirationInDays),
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
         }
         #endregion
@@ -146,9 +157,10 @@ namespace VideStore.Application.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.None,
-                Expires = expires.ToLocalTime(),
-                Secure = true
+                SameSite = SameSiteMode.Strict, 
+                Expires = expires,
+                Secure = true,
+                IsEssential = true
             };
 
             httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);

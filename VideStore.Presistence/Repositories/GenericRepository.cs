@@ -21,7 +21,7 @@ namespace VideStore.Persistence.Repositories
         public async Task<T?> GetEntityAsync(ISpecifications<T> spec)
             => await SpecificationsEvaluator<T>.GetQuery(storeContext.Set<T>(), spec).FirstOrDefaultAsync();
 
-        public async Task<T?> GetEntityAsync(int id) => await storeContext.Set<T>().FindAsync(id);
+        public async Task<T?> GetEntityAsync(string id) => await storeContext.Set<T>().FindAsync(id);
 
         public async Task AddAsync(T entity) => await storeContext.Set<T>().AddAsync(entity);
         public void Update(T entity)

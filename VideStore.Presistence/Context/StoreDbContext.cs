@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using VideStore.Domain.Entities.CartEntities;
 using VideStore.Domain.Entities.IdentityEntities;
-using VideStore.Domain.Entities.OrderEntities;
 using VideStore.Domain.Entities.ProductEntities;
-using VideStore.Presistence.Context.Configurations;
+
 
 namespace VideStore.Persistence.Context;
 
@@ -37,8 +29,10 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options):  Identity
 
 
     // order
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
+
+    // Cart 
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
 
 
 }
