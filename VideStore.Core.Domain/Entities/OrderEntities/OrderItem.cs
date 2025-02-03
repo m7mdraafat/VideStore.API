@@ -1,34 +1,27 @@
-﻿using VideStore.Domain.Common;
-using VideStore.Domain.Entities.ProductEntities;
+﻿
+using VideStore.Domain.Common;
 
-namespace VideStore.Domain.Entities.OrderEntities;
-
-public class OrderItem : BaseEntity
+namespace VideStore.Domain.Entities.OrderEntities
 {
-    public OrderItem() { }
 
-    public OrderItem(string orderId, string productId, string productName, string productImageCover ,int quantity, decimal unitPrice)
+    public class OrderItem : BaseEntity
     {
-        OrderId = orderId;
-        ProductId = productId;
-        ProductName = productName;
-        Quantity = quantity;
-        UnitPrice = unitPrice;
-        ProductImageCover = productImageCover;
+        public string ProductId { get; private set; }
+        public string ProductName { get; private set; }
+        public decimal UnitPrice { get; private set; }
+        public int Quantity { get; private set; }
+        public string PictureUrl { get; private set; }
+
+        private OrderItem() { }
+
+        public OrderItem(string productId, string productName, decimal unitPrice,
+                       int quantity, string pictureUrl)
+        {
+            ProductId = productId;
+            ProductName = productName;
+            UnitPrice = unitPrice;
+            Quantity = quantity;
+            PictureUrl = pictureUrl;
+        }
     }
-
-    public string OrderId { get; set; } = null!;
-    public Order Order { get; set; } = null!;
-
-    public string ProductId { get; set; }
-    public Product Product { get; set; }
-    public string ProductName { get; set; } = null!;
-    public string ProductImageCover { get; set; } = null!;
-
-    public int Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
-
-    public decimal Total => GetTotal();
-
-    public decimal GetTotal() => UnitPrice * Quantity;
 }

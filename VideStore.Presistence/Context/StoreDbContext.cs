@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VideStore.Domain.Entities.IdentityEntities;
-using VideStore.Domain.Entities.OrderEntities;
 using VideStore.Domain.Entities.ProductEntities;
 
 
@@ -30,8 +29,6 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options):  Identity
 
 
     // order
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
 
     // Cart 
     public DbSet<Cart> Carts { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using VideStore.Application.Interfaces;
 using VideStore.Domain.Entities.ProductEntities;
 using VideStore.Domain.ErrorHandling;
@@ -241,7 +240,7 @@ public class CartService : ICartService
             }
 
             // Save the updated user cart
-            userCart.GuestId = guestId;
+
             if (userCart.Items.Count == 0)
             {
                 await _unitOfWork.Repository<Cart>().AddAsync(userCart);

@@ -235,7 +235,7 @@ namespace VideStore.Application.Services
             if (user == null)
                 return Result.Failure<string>(new(404, $"user with email {userEmail} not found!"));
 
-            user.DisplayName = updateUserDto.FirstName + updateUserDto.LastName;
+            user.DisplayName = updateUserDto.FirstName + " " +  updateUserDto.LastName;
             user.PhoneNumber = updateUserDto.PhoneNumber;
             user.PhoneNumberConfirmed = false;
 
