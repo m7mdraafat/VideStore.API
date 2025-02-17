@@ -97,7 +97,7 @@ namespace VideStore.Infrastructure.ExternalServices
                         Email = user.Email!,
                         Token = token,
                         RefreshTokenExpiration = refreshToken.ExpireAt.ToString("dd/MM/yyyy hh:mm tt"),
-                        Role = "user",
+                        Roles = new List<string>() { "user"},
                         IsVerified = true,
 
                     };

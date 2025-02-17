@@ -68,7 +68,7 @@ namespace VideStore.Application.Services
                     FirstName = user.DisplayName.Split(' ')[0],
                     LastName = user.DisplayName.Split(' ')[1],
                     PhoneNumber = user.PhoneNumber!,
-                    Role = (await userManager.GetRolesAsync(user)).FirstOrDefault()!,
+                    Roles = (await userManager.GetRolesAsync(user)).ToList(),
                     Token = accessToken,
                     RefreshTokenExpiration = newRefreshToken.ExpireAt.ToString("o") // ISO 8601 format
                 });
@@ -154,19 +154,26 @@ namespace VideStore.Application.Services
         #region Append the refresh token to response cookie
         public async Task SetRefreshTokenInCookieAsync(string refreshToken, DateTime expires)
         {
+            if (string.IsNullOrEmpty(refreshToken))
+                throw new ArgumentException("Refresh token cannot be null or empty", nameof(refreshToken));
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Strict, 
+                SameSite = SameSiteMode.None,
                 Expires = expires,
                 Secure = true,
                 IsEssential = true
             };
 
-            httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-        }
-        #endregion
+            var context = httpContextAccessor.HttpContext;
+            if (context == null)
+                throw new InvalidOperationException("HTTP context is not available");
 
+            context.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+
+        #endregion
 
     }
 }

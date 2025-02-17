@@ -18,5 +18,10 @@ namespace VideStore.Application.Interfaces
         Task<Result<UserAddressDto>> UpdateUserAddress(ClaimsPrincipal userClaims, string addressName, UserAddressDto userAddressRequest);
         Task<Result<string>> DeleteUserAddressAsync(ClaimsPrincipal userClaims, string addressName);
         Task<Result<string>> UpdateUserDataAsync(ClaimsPrincipal userClaims, UpdateUserDto updateUserDto);
+
+        #region User Roles
+        Task<Result<string>> AddUserRoleAsync(ClaimsPrincipal userClaims, string roleName);
+        Task<Result<string>> RemoveUserRoleAsync(ClaimsPrincipal userClaims, string roleName);
+        #endregion
     }
 }

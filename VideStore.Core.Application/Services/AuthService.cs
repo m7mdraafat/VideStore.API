@@ -71,7 +71,6 @@ namespace VideStore.Application.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                Role = "user",
                 Token = token,
                 RefreshTokenExpiration = refreshToken.ExpireAt.ToString("MM/dd/yyyy hh:mm tt"),
                 PhoneNumber = model.PhoneNumber,
@@ -86,6 +85,7 @@ namespace VideStore.Application.Services
 
             await userManager.UpdateAsync(newUser);
 
+            userResponse.Roles.Add("user");
             // Set Refresh token in cookie
             await tokenProviderService.SetRefreshTokenInCookieAsync(refreshToken.Token, refreshToken.ExpireAt);
 
@@ -145,7 +145,6 @@ namespace VideStore.Application.Services
                 LastName = lastName,
                 Email = user.Email!,
                 PhoneNumber = user.PhoneNumber!,
-                Role = (await userManager.GetRolesAsync(user)).FirstOrDefault(),
                 Token = token,
                 RefreshTokenExpiration = refreshTokenExpireAt,
                 IsVerified = user.EmailConfirmed,
