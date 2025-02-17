@@ -9,6 +9,8 @@ using VideStore.Domain.Interfaces;
 using VideStore.Shared.DTOs.Requests;
 using VideStore.Shared.DTOs.Requests.Users;
 using VideStore.Shared.DTOs.Responses.Users;
+using Microsoft.Extensions.Logging;
+
 namespace VideStore.Application.Services
 {
     public class AccountService
@@ -16,7 +18,7 @@ namespace VideStore.Application.Services
             RoleManager<IdentityRole> roleManager,
             IUnitOfWork unitOfWork,
             ITokenService tokenService, 
-            IMapper mapper) : IAccountService
+            IMapper mapper, ILogger<IAccountService> logger) : IAccountService
     {
 
         #region Get Current User
@@ -31,8 +33,13 @@ namespace VideStore.Application.Services
             var phoneNumber = user!.PhoneNumber;
             if (string.Equals(user.PhoneNumber, "EMPTY", comparisonType: StringComparison.Ordinal))
                 phoneNumber = null;
+
+            var userRoles = await GetUserRolesAsync(userClaims);
+            if (!userRoles.IsSuccess)
+                return Result.Failure<CurrentUserResponse>(new Error(400, "Error occurs when get user roles."));
+
             var userResponse = new CurrentUserResponse
-                (user.DisplayName.Split(' ')[0], user!.DisplayName.Split(' ')[1], user.Email!, phoneNumber!,
+                (user.DisplayName.Split(' ')[0], user!.DisplayName.Split(' ')[1], user.Email!, phoneNumber!, userRoles.Value,
                     userAddresses);
 
             return Result.Success(userResponse);
@@ -138,7 +145,7 @@ namespace VideStore.Application.Services
 
         #endregion
 
-        
+        #region Manage User Addresses
         public async Task<Result<string>> CreateUserAddress(ClaimsPrincipal userClaims, UserAddressDto userAddressRequest)
         {
             var userEmail = userClaims.FindFirstValue(ClaimTypes.Email);
@@ -250,5 +257,100 @@ namespace VideStore.Application.Services
             return Result.Failure<string>(new(500, errors));
         }
 
+        #endregion
+
+        #region Manage User Roles
+        public async Task<Result<string>> AddUserRoleAsync(ClaimsPrincipal userClaims, string roleName)
+        {
+            try
+            {
+                var userEmail = userClaims.FindFirstValue(ClaimTypes.Email);
+                var user = await userManager.FindByEmailAsync(userEmail);
+                if (user == null)
+                {
+                    return Result.Failure<string>(new Error(404, "User not found."));
+                }
+
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    return Result.Failure<string>(new Error(400, "Role does not exist."));
+                }
+
+                var result = await userManager.AddToRoleAsync(user, roleName);
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return Result.Failure<string>(new Error(500, errors));
+                }
+
+                return Result.Success<string>("Role added successfully.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while adding user role.");
+                return Result.Failure<string>(new Error(500, "Internal server error, please try again later."));
+            }
+        }
+
+        public async Task<Result<string>> RemoveUserRoleAsync(ClaimsPrincipal userClaims, string roleName)
+        {
+            try
+            {
+                var userEmail = userClaims.FindFirstValue(ClaimTypes.Email);
+                var user = await userManager.FindByEmailAsync(userEmail);
+                if (user == null)
+                {
+                    return Result.Failure<string>(new Error(404, "User not found."));
+                }
+
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    return Result.Failure<string>(new Error(400, "Role does not exist."));
+                }
+
+                var result = await userManager.RemoveFromRoleAsync(user, roleName);
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return Result.Failure<string>(new Error(500, errors));
+                }
+
+                return Result.Success<string>("Role removed successfully.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while removing user role.");
+                return Result.Failure<string>(new Error(500, "Internal server error, please try again later."));
+            }
+        }
+
+        private async Task<Result<List<RoleDto>>> GetUserRolesAsync(ClaimsPrincipal userClaims)
+        {
+            try
+            {
+                var userEmail = userClaims.FindFirstValue(ClaimTypes.Email);
+                var user = await userManager.FindByEmailAsync(userEmail);
+                if (user == null)
+                {
+                    return Result.Failure<List<RoleDto>>(new Error(404, "User not found."));
+                }
+
+                var roles = await userManager.GetRolesAsync(user);
+                var rolesDto = new List<RoleDto>();
+                foreach(var role in roles)
+                {
+                    rolesDto.Add(new RoleDto { RoleId = await roleManager.GetRoleIdAsync(new IdentityRole(role)), RoleName = role });
+                }
+
+                return Result.Success<List<RoleDto>>(rolesDto);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{ex.Message}");
+                return Result.Failure<List<RoleDto>>(new Error(500, "Internal server error, please try again later."));
+            }
+        }
+
+        #endregion
     }
 }

@@ -47,6 +47,14 @@ namespace VideStore.Api
 
             //services.AddRedis(databaseConnections.RedisConnection); 
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("admin", "superAdmin"));
+                options.AddPolicy("user", policy => policy.RequireRole("user", "customer"));
+
+
+            });
+
             services.AddApplicationServices();
 
             services.AddHangfireConfigurations(databaseConnections.HangfireConnection);

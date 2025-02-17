@@ -5,7 +5,7 @@ namespace VideStore.Shared.DTOs.Order
     public record OrderDto(
     string Id,
     DateTime OrderDate,
-    OrderStatus Status,
+    string Status,
     Address ShippingAddress,
     List<OrderItemDto> Items,
     decimal Total);

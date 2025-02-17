@@ -275,7 +275,7 @@ public class CartService : ICartService
     }
     public async Task<Result> ClearCartAsync(string? userId, Guid? guestId)
     {
-        await _unitOfWork.BeginTransactionAsync();
+        //await _unitOfWork.BeginTransactionAsync();
 
         try
         {
@@ -312,13 +312,13 @@ public class CartService : ICartService
             var cacheKey = GetCacheKey(userId, guestId);
             await InvalidateCacheAsync(cacheKey);
 
-            await _unitOfWork.CommitTransactionAsync();
+            //await _unitOfWork.CommitTransactionAsync();
 
             return Result.Success();
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            //await _unitOfWork.RollbackTransactionAsync();
             _logger.LogError(ex, "Failed to clear cart");
             return Result.Failure(new Error(500, "Failed to clear cart"));
         }

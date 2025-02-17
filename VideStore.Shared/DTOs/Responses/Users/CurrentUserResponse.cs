@@ -7,5 +7,6 @@ namespace VideStore.Shared.DTOs.Responses.Users
         string LastName,
         string Email,
         string PhoneNumber,
+        List<RoleDto>? Roles,
         List<UserAddressDto> UserAddresses);
 }

@@ -88,5 +88,22 @@ namespace VideStore.Api.Controllers.V1
             var result = await accountService.UpdateUserDataAsync(User, updateUserDto);
             return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
         }
+
+
+        [Authorize(Policy = "Admin")]
+        [HttpPut("assign-user-role")]
+        public async Task<ActionResult> AssignUserRole(string roleName)
+        {
+            var result = await accountService.AddUserRoleAsync(User, roleName);
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpDelete("remove-user-role")]
+        public async Task<ActionResult> RemoveUserRole(string roleName)
+        {
+            var result = await accountService.RemoveUserRoleAsync(User, roleName);
+            return result.IsSuccess ? result.ToSuccess(result.Value) : result.ToProblem();
+        }
     }
 }
